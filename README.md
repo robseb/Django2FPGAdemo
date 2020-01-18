@@ -68,9 +68,9 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
       Applying sessions.0001_initial... OK
       ````
   3. Use the next command to start the web server (here on Port 8181)
-    ````bash
-     python3 manage.py runserver 0:8181
-    ````
+      ````bash
+      python3 manage.py runserver 0:8181
+      ````
     * The output of this command should look like this:
       ````bash
       root@cyclone5:~/DjangoSensor# python3 manage.py runserver 0:8181
@@ -100,9 +100,9 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
 Every Django project requiers at least one application. We will build an App to readout the accelerometer (*Analog Devices ADXL345*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
 
 *  The following command adds a new app called "AccSensor" to the project.
-  ````bash
-  python3 manage.py startapp AccSensor
-  ````
+   ````bash
+   python3 manage.py startapp AccSensor
+   ````
   * **Note:** Be sure that this command is executed inside the project-folder (*DjangoSensor/*)
 * The project folder now contains the following structure:
   * All important files are marked
@@ -187,7 +187,21 @@ Every Django project requiers at least one application. We will build an App to 
    admin.site.index_title = 'Django Sensor Demo Administration'     # Sub-Headline title       
    admin.site.site_title = 'rsYocto'                                # HTML Headline
    ````
-  
- ### Test 
-   
-   
+   (Bis hier wurde korigiert) 
+ ### Testing the Administrator page
+ * Save all open files
+ * To generate a mySQLite database with these settings execude following Linux Shell commands:
+   ````bash
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   python3 manage.py migrate --run-syncdb
+   ````
+ * Start the Django Server
+   ````bash 
+   python3 manage.py runserver 0:8181
+   ```` 
+ * Open following URL with a web browser:
+   ````txt
+   http://<iPv4-Address of the Board>:8181/admin 
+   ````
+ 
