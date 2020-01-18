@@ -169,7 +169,7 @@ Every Django project requiers at least one application. We will build an App to 
     Password (again): *********
     Superuser created successfully.
     ```
- * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoSensor/AccSensor/Admin.py*)
+ * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoSensor/AccSensor/admin.py*)
    ````python
    '''
    Django accelerometer demo application - "admin.py"
@@ -190,7 +190,7 @@ Every Django project requiers at least one application. We will build an App to 
    (Bis hier wurde korigiert) 
  ### Testing the Administrator page
  * Save all open files
- * To generate a mySQLite database with these settings execude following Linux Shell commands:
+ * To generate a mySQLite database with these settings execude following Linux Shell commands (*DjangoSensor/*):
    ````bash
    python3 manage.py makemigrations
    python3 manage.py migrate
@@ -203,5 +203,39 @@ Every Django project requiers at least one application. We will build an App to 
  * Open following URL with a web browser:
    ````txt
    http://<iPv4-Address of the Board>:8181/admin 
-   ````
+   ```` 
+ * The Yocto Login Screen should apear:
+   (Pic04)
  
+ * Use your login credentials to login
+ (Pic05)
+ * Here is with the table "*Accsensor*" the content of the database accessible
+ * At this point it is posibile to add sensor data manuel 
+ (Hier ggf. manuel ein wert einfuegen)
+ 
+  ### Presenting the Sensor Data on a web page
+  * To display live date of the accelerometer is neccesary add some lines of code to the "*views.py*"-file of the App (*DjangoSensor/AccSensor/views.py*):
+  ````python
+  '''
+  Django accelerometer demo application - "views.py"
+  '''
+
+  from django.http import Http404
+  from django.shortcuts import render
+  from .models import AccSensorReading
+
+  # 
+  # View the curent Sensor data 
+  #
+  def detail(request):
+      try:
+          accSensor = AccSensorReading.objects.all()     # Read the latest sensor object
+      except AccSensorReading.DoesNotExist:        
+          raise Http404("accelerometer does not exist")  # In case of an Error display a Error 404 Screeen
+
+      # Show the template file "template.html" with the current object
+      return render(request,'AccSensor/template.html', {'obj':accSensor}) 
+
+  ````
+  
+  
