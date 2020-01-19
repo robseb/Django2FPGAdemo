@@ -191,7 +191,7 @@ Every Django project requiers at least one application. We will build an App to 
    (Bis hier wurde korigiert) 
  ### Testing the Administrator page
  * Save all open files
- * To generate a mySQLite database with these settings execude following Linux Shell commands (*DjangoSensor/*):
+ * To generate a mySQLite database with these settings execude the following Linux Shell commands (*DjangoSensor/*):
    ````bash
    python3 manage.py makemigrations
    python3 manage.py migrate
@@ -201,23 +201,23 @@ Every Django project requiers at least one application. We will build an App to 
    ````bash 
    python3 manage.py runserver 0:8181
    ```` 
- * Open following URL with a web browser:
+ * Open the following URL with a web browser:
    ````txt
    http://<iPv4-Address of the Board>:8181/admin 
    ```` 
- * The Yocto Login Screen should apear:
+ * The Yocto Login Screen should appear:
    (Pic04)
  
  * Use your login credentials to login
  (Pic05)
- * Here is with the table "*Accsensor*" the content of the database accessible
- * At this point it is posibile to add sensor data manuel 
+ * Here is the content of the database with the table "*Accsensor*" accessible
+ * At this point it is possible to add the sensor data manuelly 
  (Hier ggf. manuel ein wert einfuegen)
  
   ### Presenting the Sensor Data and control the FPGA LED on a web page
-  * To view this data in a graphic is the Libary [plotly](https://plot.ly/python/) used
-    * That is by far the easist way to implement such kind of UI-elemets to a web page, but realy unificend as well
-  * To display live date of the accelerometer is it neccesary to add some lines of code to the "*views.py*"-file of the App (*DjangoSensor/AccSensor/views.py*):
+  * To view this data in a graphic the Libary [plotly](https://plot.ly/python/) is used
+    * That is by far the easiest way to implement such kind of UI-elemets to a web page, but really unefficient as well
+  * To display live date of the accelerometer it is necessary to add some lines of code to the "*views.py*"-file on the App (*DjangoSensor/AccSensor/views.py*):
   ````python
   '''
   Django accelerometer demo application - "views.py"
@@ -235,13 +235,13 @@ Every Django project requiers at least one application. We will build an App to 
   from subprocess import call
 
   # 
-  # View the curent Sensor data 
+  # View the current Sensor data 
   #
   def detail(request):
       try:
           accSensor = AccSensorReading.objects.all()     # Read the latest sensor object
       except AccSensorReading.DoesNotExist:        
-          raise Http404("Accelerometer data does not exist")  # In case of an Error display a Error 404 Screeen
+          raise Http404("Accelerometer data does not exist")  # In case of an Error display an Error 404 Screeen
 
       # Show the template file "AccDisplayTemplate.html" with the current object
       #time.sleep(.500)
@@ -270,7 +270,7 @@ Every Django project requiers at least one application. We will build an App to 
       })
 
   ````
-  * With this functions are two events declareted that allow with a push of a button to controol the HPS LED 0:
+  * With this functions two events are declared, this allows to control the HPS with a push of the button LED 0:
     * Add them to "*views.py*"-file as well
     ````python
       def LED0_ON(request):
@@ -287,14 +287,14 @@ Every Django project requiers at least one application. We will build an App to 
 
      ````
 
-  * The *render*-functions uses the "*AccDisplayTemplate.html*" HTML file to build the canvas of the web interface
-  * Django looks only for this kind of template file in this folder structure: *<App>/templates/<App>/
+  * The *render*-function uses the "*AccDisplayTemplate.html*" HTML file to build the canvas of the web interface
+  * Django only looks for this kind of template file in this folder structure: *<App>/templates/<App>/
   * That meens here, that this file must be located at here:
     ````txt
     DjangoSensor/AccSensor/templates/AccSensor/AccDisplayTemplate.html
     ````
     * Creat the file with all folders with *Visual Studio Code Insider*
-  * For building a simple UI add following to the HTML file:
+  * For building a simple UI add the following to the HTML file:
     ````html
     <!-- Django accelerometer demo application - AccSensor/AccDisplayTemplate.html -->
     <!DOCTYPE HTML>
@@ -312,7 +312,7 @@ Every Django project requiers at least one application. We will build an App to 
         {{ plot_div }}
         {% endautoescape %}
 
-        <!--Show in a table the raw sensor data-->
+        <!--Show the raw sensor data in a table-->
         <table>
           <tr>
             <th>Data</th>
@@ -335,10 +335,10 @@ Every Django project requiers at least one application. We will build an App to 
     ````
 
 ### Routing the URLs of the Application
-* By default nothing is routed to the front page of this application (http://<iPv4-Address of the Board>:8181/)
-* On this URL will Django show a error screen:
+* By default nothing will be routed to the front page of this application (http://<iPv4-Address of the Board>:8181/)
+* On this URL Django will show an error screen:
     (Pic06)
-* To link the front page to the "AccSensor"-App with the previosly created UI are following line of code in the global url configurations (*DjangoSensor/DjangoSensor/urls.py*):
+* To link the front page to the "AccSensor"-App with the previosly created UI at the following lines of code in the global url configurations (*DjangoSensor/DjangoSensor/urls.py*):
   ````python
   from django.contrib import admin
   from django.urls import path
@@ -353,19 +353,19 @@ Every Django project requiers at least one application. We will build an App to 
 
       path('/LED0_ON',views.LED0_ON,name="scriptLED0N"),   # /LED0_ON   -> triggered by pushing the LED0 ON Button 
       path('/LED0_OFF',views.LED0_OFF,name="scriptLED0F"), # /LED0_OFF  -> triggered by pushing the LED0 OFF Button 
-      # e.g. views.LED0_ON is name of viewer function  
-      # With e.g. the name="scriptLED0N" this the linkage taken to the HTML event handler: '{% url 'scriptLED0N' %}'
+      # e.g. views.LED0_ON is the name of the viewer function  
+      # With e.g. the name="scriptLED0N" the linkage is taken to the HTML event handler: '{% url 'scriptLED0N' %}'
   ]
   ````
 
  ### Testing the UI of the Appilcation 
- * Now all configurations of the user elements of this aplications are done and it is time to test this state
+ * Now all configurations of the user elements of these applications are done and it is time to test this state
  * Save all open files
  * Import the Python pip-package "plotly" that is used for the plotting of the data:
   ````bash
   pip install plotly
   ````
- * Execude following Linux Shell commands again (*DjangoSensor/*):
+ * Execude the following Linux Shell commands again (*DjangoSensor/*):
    ````bash
    python3 manage.py makemigrations
    python3 manage.py migrate
@@ -375,12 +375,12 @@ Every Django project requiers at least one application. We will build an App to 
    ````bash 
    python3 manage.py runserver 0:8181
    ```` 
- * Open following URL with a web browser:
+ * Open the following URL with a web browser:
    ````txt
    http://<iPv4-Address of the Board>:8181/admin 
    ```` 
  * The front page should now look like this: 
    (Pic07)
 
- * With the admin interface it is posible to add some values to the plot
+ * With the admin interface it is possible to add some values to the plot
 
