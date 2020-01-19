@@ -134,13 +134,14 @@ Every Django project requiers at least one application. We will build an App to 
   Django accelerometer demo application - "models.py"
   '''
   from django.db import models
+  from datetime import datetime
 
   #
   # Class for reading the accelerometer data
   #
   class AccSensorReading(models.Model):
       reading = models.CharField(max_length=20)           # Sensor value as Char Text Field type
-      time    = models.DateTimeField(auto_now_add=True)   # Time stamp value
+      timestamp = models.DateTimeField(default=datetime.now, db_index=True)    # Time stamp
 
       def __unicode__(self):
           return self.reading
@@ -229,13 +230,21 @@ Every Django project requiers at least one application. We will build an App to 
   #
   def detail(request):
       try:
-          accSensor = AccSensorReading.objects.all()     # Read the latest sensor object
+          # Read the latest sensor object
+          accSensor = AccSensorReading.objects.all()     
       except AccSensorReading.DoesNotExist:        
-          raise Http404("accelerometer does not exist")  # In case of an Error display a Error 404 Screeen
+          # In case of an Error display a Error 404 Screeen
+          raise Http404("Accelerometer data does not exist")  
 
-      # Show the template file "template.html" with the current object
-      return render(request,'AccSensor/template.html', {'obj':accSensor}) 
+      # Show the template file "AccDisplayTemplate.html" with the current object
+      return render(request,'AccSensor/AccDisplayTemplate.html', {'obj':accSensor}) 
 
   ````
-  
+  * The *render*-functions uses the "*AccDisplayTemplate.html*" HTML file to build the canvas of the web interface
+  * Django looks only for this kind of template file in this folder structure: *<App>/templates/<App>/
+  * That meens here, that this file must be located at here:
+    ````txt
+    DjangoSensor/AccSensor/templates/AccSensor/AccDisplayTemplate.html
+    ````
+    * Creat the file with all folders with *Visual Studio Code Insider*
   
