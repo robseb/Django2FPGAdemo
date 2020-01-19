@@ -169,7 +169,7 @@ Every Django project requiers at least one application. We will build an App to 
     Password: **********
     Password (again): *********
     Superuser created successfully.
-    ```
+    ````
  * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoSensor/AccSensor/admin.py*)
    ````python
    '''
@@ -357,5 +357,30 @@ Every Django project requiers at least one application. We will build an App to 
       # With e.g. the name="scriptLED0N" this the linkage taken to the HTML event handler: '{% url 'scriptLED0N' %}'
   ]
   ````
-* sasasa
+
+ ### Testing the UI of the Appilcation 
+ * Now all configurations of the user elements of this aplications are done and it is time to test this state
+ * Save all open files
+ * Import the Python pip-package "plotly" that is used for the plotting of the data:
+  ````bash
+  pip install plotly
+  ````
+ * Execude following Linux Shell commands again (*DjangoSensor/*):
+   ````bash
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   python3 manage.py migrate --run-syncdb
+   ````
+ * Start the Django Server
+   ````bash 
+   python3 manage.py runserver 0:8181
+   ```` 
+ * Open following URL with a web browser:
+   ````txt
+   http://<iPv4-Address of the Board>:8181/admin 
+   ```` 
+ * The front page should now look like this: 
+   (Pic07)
+
+ * With the admin interface it is posible to add some values to the plot
 
