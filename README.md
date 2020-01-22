@@ -21,7 +21,7 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
   ````bash
   django-admin startproject DjangoFPGA
   ````
-  (Pic01)
+  ![Alt text](pic/pic01.jpg?raw=true "Django Development with Visual Studio Code")
  
  * **Note:** Use in the drop-down menu (blue arrow) the point "sh" to access the Linux Terminal. In case the point is not there press the “**+**”-icon to add it. 
  * Navigate with the Linux Terminal inside Visual Studio code to this project
@@ -73,7 +73,7 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
       ````
     * The output of this command should look like this:
       ````bash
-      root@cyclone5:~/DjangoSensor# python3 manage.py runserver 0:8181
+      root@cyclone5:~/DjangoFPGA# python3 manage.py runserver 0:8181
       Watching for file changes with StatReloader
       Performing system checks...
 
@@ -89,30 +89,32 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
     ````txt
      http://<iPv4-Address of the Board>:8181/ 
     ````
-* If you see a *rocket lunch* your Django project works properly
+* If you see a *rocket lunch* your Django project works properly 
 
-  (Pic02)
- 
+  ![Alt text](pic/pic02.jpg?raw=true "Django Start screen")
+
+
 * All **HTTP**-attaches are listed on the terminal as well
 
 
 # Creating a new Django application to read and show accelerometer data
 Every Django project requiers at least one application. We will build an App to readout the accelerometer (*Analog Devices ADXL345*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
 
-*  The following command adds a new app called "AccSensor" to the project.
+*  The following command adds a new app called "BoardInteraction" to the project.
    ````bash
-   python3 manage.py startapp AccSensor
+   python3 manage.py startapp BoardInteraction
    ````
   * **Note:** Be sure that this command is executed inside the project-folder (*DjangoFPGA/*)
 * The project folder now contains the following structure:
   * All important files are marked
   
-  (Pic03)
+  ![Alt text](pic/pic03.jpg?raw=true "Django Folder structure")
+  
 * Add this application to the Django project by adding the following line *settings.py* to the variable **INSTALLED_APPS**:
   ````python
   # Application definition
   INSTALLED_APPS = [
-      'AccSensor.apps.AccsensorConfig', # Add this line 
+      'BoardInteraction.apps.BoardinteractionConfig', # Add this line 
       'django.contrib.admin',
       'django.contrib.auth',
       'django.contrib.contenttypes',
@@ -128,35 +130,37 @@ Every Django project requiers at least one application. We will build an App to 
    ````
 
 ### Creating a model to store the accelerometer data into a mySQLite database
-* Add the following python code to the model file (*DjangoFPGA/AccSensor/models.py*)
+* Add the following python code to the model file (*DjangoFPGA/BoardInteraction/models.py*)
   ````python
   '''
-  Django accelerometer demo application - "models.py"
+  Django FPGA Interaction demo application - "models.py"
   '''
   from django.db import models
   from datetime import datetime
 
   #
-  # Class for reading the accelerometer data
+  # Class for reading a analog Sensor 
   #
-  class AccSensorReading(models.Model):
-      reading = models.CharField(max_length=20)           # Sensor value as Char Text Field type
+  class ADCSensorReading(models.Model):
+      reading = models.CharField(max_length=20)           # Sensor value as Char Text Field type 
+                                                          # max 20 characters 
       timestamp = models.DateTimeField(default=datetime.now, db_index=True)    # Time stamp
 
       def __unicode__(self):
           return self.reading
 
   # 
-  # Class for connecting an Analog Devices ADXL345
+  # Class for connecting a Analog Devices LTC LTC2308 ADC Channel
   #
-  class AccSensor(models.Model):
-      name     = models.CharField(max_length=200)          # a name for the Sensor
+  class ADCchannle(models.Model):
+      name     = models.CharField(max_length=200)          # a name for the Sensor on the ADC Channel
       slug     = models.SlugField(unique=True)             # an unique working handler name
       readings = models.ManyToManyField(AccSensorReading)  # the sensor data object
+      ch       = models.IntegerField()                     # the used ADC Channel Number
 
       def __unicode__(self):
           return self.name
-   
+
   ````
  
  ### Creating an Administrator page to allow an access to the database
@@ -170,25 +174,25 @@ Every Django project requiers at least one application. We will build an App to 
     Password (again): *********
     Superuser created successfully.
     ````
- * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoFPGA/AccSensor/admin.py*)
+ * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoFPGA/BoardInteraction/admin.py*)
    ````python
    '''
-   Django accelerometer demo application - "admin.py"
+   Django FPGA Interaction demo application  - "admin.py"
    '''
 
    from django.contrib import admin
-   from AccSensor.models import AccSensorReading, AccSensor
+   from BoardInteraction.models import ADCSensorReading, ADCchannel
 
-   # Allow access to all accelerometer data models 
-   admin.site.register(AccSensor)
-   admin.site.register(AccSensorReading)
+   # Allow access to all ADC data models inside the MySQLite Database
+   admin.site.register(ADCchannel)
+   admin.site.register(ADCSensorReading)
 
    # Personalisation of the admin page
    admin.site.site_header = 'rsYocto'                               # Headline title           
    admin.site.index_title = 'Django Sensor Demo Administration'     # Sub-Headline title       
    admin.site.site_title = 'rsYocto'                                # HTML Headline
    ````
-   (Bis hier wurde korigiert) 
+   
  ### Testing the Administrator page
  * Save all open files
  * To generate a mySQLite database with these settings execude the following Linux Shell commands (*DjangoFPGA/*):
@@ -206,10 +210,13 @@ Every Django project requiers at least one application. We will build an App to 
    http://<iPv4-Address of the Board>:8181/admin 
    ```` 
  * The Yocto Login Screen should appear:
-   (Pic04)
+   
+  ![Alt text](pic/pic04.jpg?raw=true "Django Adim Login Screen")
  
  * Use your login credentials to login
- (Pic05)
+ 
+  ![Alt text](pic/pic05.jpg?raw=true "Django Adim interface")
+  
  * Here is the content of the database with the table "*Accsensor*" accessible
  * At this point it is possible to add the sensor data manuelly 
  (Hier ggf. manuel ein wert einfuegen)
