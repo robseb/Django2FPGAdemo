@@ -17,16 +17,16 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
 
 * Boot up [*rsYocto*](https://github.com/robseb/rsyocto) by following the [getting started Guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
 * Setup Visual Studio Code Insider with [this instructions](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
-* Use inside Visual Studio Code Insider the integrated Linux Terminal with the following command to create a new Django project with the name "DjangoSensor":
+* Use inside Visual Studio Code Insider the integrated Linux Terminal with the following command to create a new Django project with the name "DjangoFPGA":
   ````bash
-  django-admin startproject DjangoSensor
+  django-admin startproject DjangoFPGA
   ````
   (Pic01)
  
  * **Note:** Use in the drop-down menu (blue arrow) the point "sh" to access the Linux Terminal. In case the point is not there press the “**+**”-icon to add it. 
  * Navigate with the Linux Terminal inside Visual Studio code to this project
   ````bash
-  cd DjangoSensor
+  cd DjangoFPGA
   ````
  
 # Testing the empty Django Project by accessing it with a web browser
@@ -45,7 +45,7 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
     ````
     * The output of this command should look like this:
       ````bash
-      root@cyclone5:~/DjangoSensor# python3 manage.py migrate
+      root@cyclone5:~/DjangoFPGA# python3 manage.py migrate
       Operations to perform:
       Apply all migrations: admin, auth, contenttypes, sessions
       Running migrations:
@@ -79,7 +79,7 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
 
       System check identified no issues (0 silenced).
       January 18, 2020 - 15:35:44
-      Django version 3.0.2, using settings 'DjangoSensor.settings'
+      Django version 3.0.2, using settings 'DjangoFPGA.settings'
       Starting development server at http://0:8181/
       Quit the server with CONTROL-C.
       ````
@@ -103,7 +103,7 @@ Every Django project requiers at least one application. We will build an App to 
    ````bash
    python3 manage.py startapp AccSensor
    ````
-  * **Note:** Be sure that this command is executed inside the project-folder (*DjangoSensor/*)
+  * **Note:** Be sure that this command is executed inside the project-folder (*DjangoFPGA/*)
 * The project folder now contains the following structure:
   * All important files are marked
   
@@ -128,7 +128,7 @@ Every Django project requiers at least one application. We will build an App to 
    ````
 
 ### Creating a model to store the accelerometer data into a mySQLite database
-* Add the following python code to the model file (*DjangoSensor/AccSensor/models.py*)
+* Add the following python code to the model file (*DjangoFPGA/AccSensor/models.py*)
   ````python
   '''
   Django accelerometer demo application - "models.py"
@@ -170,7 +170,7 @@ Every Django project requiers at least one application. We will build an App to 
     Password (again): *********
     Superuser created successfully.
     ````
- * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoSensor/AccSensor/admin.py*)
+ * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoFPGA/AccSensor/admin.py*)
    ````python
    '''
    Django accelerometer demo application - "admin.py"
@@ -191,7 +191,7 @@ Every Django project requiers at least one application. We will build an App to 
    (Bis hier wurde korigiert) 
  ### Testing the Administrator page
  * Save all open files
- * To generate a mySQLite database with these settings execude the following Linux Shell commands (*DjangoSensor/*):
+ * To generate a mySQLite database with these settings execude the following Linux Shell commands (*DjangoFPGA/*):
    ````bash
    python3 manage.py makemigrations
    python3 manage.py migrate
@@ -217,7 +217,7 @@ Every Django project requiers at least one application. We will build an App to 
   ### Presenting the Sensor Data and control the FPGA LED on a web page
   * To view this data in a graphic the Libary [plotly](https://plot.ly/python/) is used
     * That is by far the easiest way to implement such kind of UI-elemets to a web page, but really unefficient as well
-  * To display live date of the accelerometer it is necessary to add some lines of code to the "*views.py*"-file on the App (*DjangoSensor/AccSensor/views.py*):
+  * To display live date of the accelerometer it is necessary to add some lines of code to the "*views.py*"-file on the App (*DjangoFPGA/AccSensor/views.py*):
   ````python
   '''
   Django accelerometer demo application - "views.py"
@@ -291,7 +291,7 @@ Every Django project requiers at least one application. We will build an App to 
   * Django only looks for this kind of template file in this folder structure: *<App>/templates/<App>/
   * That meens here, that this file must be located at here:
     ````txt
-    DjangoSensor/AccSensor/templates/AccSensor/AccDisplayTemplate.html
+    DjangoFPGA/AccSensor/templates/AccSensor/AccDisplayTemplate.html
     ````
     * Creat the file with all folders with *Visual Studio Code Insider*
   * For building a simple UI add the following to the HTML file:
@@ -338,7 +338,7 @@ Every Django project requiers at least one application. We will build an App to 
 * By default nothing will be routed to the front page of this application (http://<iPv4-Address of the Board>:8181/)
 * On this URL Django will show an error screen:
     (Pic06)
-* To link the front page to the "AccSensor"-App with the previosly created UI at the following lines of code in the global url configurations (*DjangoSensor/DjangoSensor/urls.py*):
+* To link the front page to the "AccSensor"-App with the previosly created UI at the following lines of code in the global url configurations (*DjangoFPGA/DjangoSensor/urls.py*):
   ````python
   from django.contrib import admin
   from django.urls import path
@@ -365,7 +365,7 @@ Every Django project requiers at least one application. We will build an App to 
   ````bash
   pip install plotly
   ````
- * Execude the following Linux Shell commands again (*DjangoSensor/*):
+ * Execude the following Linux Shell commands again (*DjangoFPGA/*):
    ````bash
    python3 manage.py makemigrations
    python3 manage.py migrate
