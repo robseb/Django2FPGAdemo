@@ -21,7 +21,7 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
   ````bash
   django-admin startproject DjangoFPGA
   ````
-  (Pic01)
+  ![Alt text](pic/pic01.jpg?raw=true "Django Development with Visual Studio Code")
  
  * **Note:** Use in the drop-down menu (blue arrow) the point "sh" to access the Linux Terminal. In case the point is not there press the “**+**”-icon to add it. 
  * Navigate with the Linux Terminal inside Visual Studio code to this project
@@ -73,7 +73,7 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
       ````
     * The output of this command should look like this:
       ````bash
-      root@cyclone5:~/DjangoSensor# python3 manage.py runserver 0:8181
+      root@cyclone5:~/DjangoFPGA# python3 manage.py runserver 0:8181
       Watching for file changes with StatReloader
       Performing system checks...
 
@@ -89,10 +89,11 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
     ````txt
      http://<iPv4-Address of the Board>:8181/ 
     ````
-* If you see a *rocket lunch* your Django project works properly
+* If you see a *rocket lunch* your Django project works properly 
 
-  (Pic02)
- 
+  ![Alt text](pic/pic02.jpg?raw=true "Django Start screen)
+
+
 * All **HTTP**-attaches are listed on the terminal as well
 
 
