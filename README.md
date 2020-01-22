@@ -123,7 +123,7 @@ Every Django project requiers at least one application. We will build an App to 
       'django.contrib.staticfiles',
   ]
   ````
-  * **Note:** This is a connection to the function *AccsensorConfig()* that is located in the *"app.py"* file
+  * **Note:** This is a connection to the function *BoardinteractionConfig()* that is located in the *"app.py"* file
   * Migrate the project again
    ````bash
    python3 manage.py migrate 
@@ -152,10 +152,10 @@ Every Django project requiers at least one application. We will build an App to 
   # 
   # Class for connecting a Analog Devices LTC LTC2308 ADC Channel
   #
-  class ADCchannle(models.Model):
+  class ADCchannel(models.Model):
       name     = models.CharField(max_length=200)          # a name for the Sensor on the ADC Channel
       slug     = models.SlugField(unique=True)             # an unique working handler name
-      readings = models.ManyToManyField(AccSensorReading)  # the sensor data object
+      readings = models.ManyToManyField(ADCSensorReading)  # the sensor data object
       ch       = models.IntegerField()                     # the used ADC Channel Number
 
       def __unicode__(self):
@@ -166,7 +166,7 @@ Every Django project requiers at least one application. We will build an App to 
  ### Creating an Administrator page to allow an access to the database
  * Create an user who can do the login to the admin site. Run the following command:
     ````bash
-    django-admin startproject createsuperuser
+    python3 manage.py createsuperuser
     ````
  * Enter an Username, an Email-Address and a Passwort
     ````bash
