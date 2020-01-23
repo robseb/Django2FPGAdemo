@@ -97,8 +97,9 @@ The latest version of Django with all necessary tools is pre-installed on [*rsYo
 * All **HTTP**-attaches are listed on the terminal as well
 
 
-# Creating a new Django application to read and show accelerometer data
-Every Django project requiers at least one application. We will build an App to readout the accelerometer (*Analog Devices ADXL345*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
+# Creating a new Django read and show data from the FPGA fabric and to manage FPGA configurations
+Every Django project requiers at least one application. We will build an App to readout the Soft-IP ADC Interface  (*Analog Devices LTC2308*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
+As a secound feature it is also shown how to build with the Django Franework a Web application to configure the FPGA fabric and to mange all uploaded configuration files
 
 *  The following command adds a new app called "BoardInteraction" to the project.
    ````bash
