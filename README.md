@@ -294,11 +294,11 @@ Every Django project requiers at least one application. We will build an App to 
 
      ````
 
-  * The *render*-function uses the "*AccDisplayTemplate.html*" HTML file to build the canvas of the web interface
+  * The *render*-function uses the "*DisplayTemplate.html*" HTML file to build the canvas of the web interface
   * Django only looks for this kind of template file in this folder structure: *<App>/templates/<App>/
   * That meens here, that this file must be located at here:
     ````txt
-    DjangoFPGA/AccSensor/templates/AccSensor/AccDisplayTemplate.html
+    DjangoFPGA/BoardInteraction/templates/BoardInteraction/DisplayTemplate.html
     ````
     * Creat the file with all folders with *Visual Studio Code Insider*
   * For building a simple UI add the following to the HTML file:
