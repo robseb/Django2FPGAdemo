@@ -1,22 +1,18 @@
 # Django2FPGAdemo
 
  ![Alt text](pic/pic00.jpg?raw=true "Concept")
- 
-## Demonstration how build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
 
-**This step by step guide shows how to log Sensor Data from a Soft-IP ADC interface within a SQLite-Database and how to plot this data on a web interface. In addition, it is demonstrated how to manage and change the FPGA Configuration with just a web browser.**  
+###Demonstration how build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
 
-Complex web interfaces for controlling and monitoring of embedded systems are standard today. For low quantity FPGA applications, the development of this web application is often time-consuming. To accelerate this process, it is important to use powerful web development frameworks with simple to use IDEs such as Django. A huge community on desktop site uses that and if the same version of Django runs on the embedded Linux, it is possible to benefit from their knowledge. Django has a comprehensive documentation with many demos. However, these demos are for typical Desktop- and Cloud- applications and not for embedded applications. 
-The imported part of embedded management web applications are the interaction between the web interface and Sensor- or FPGA-data. 
+**This step by step guide shows how to log Sensor Data from a Soft-IP ADC interface within a SQLite-Database and how to plot this data on a web interface. In addition, it is demonstrated how to manage and change the FPGA Configuration with just a web browser.**
 
+Complex web interfaces for controlling and monitoring of embedded systems are standard today. For low quantity FPGA applications, the development of this web application is often time-consuming. To accelerate this process, it is important to use powerful web development frameworks with simple to use IDEs such as Django. A huge community on desktop site uses that and if the same version of Django runs on the embedded Linux, it is possible to benefit from their knowledge. Django has a comprehensive documentation with many demos. However, these demos are for typical Desktop- and Cloud- applications and not for embedded applications. The imported part of embedded management web applications are the interaction between the web interface and Sensor- or FPGA-data.
+To demonstrated that, is the ADC converter (Analog Devices LTC2308) of a Terasic DE10-Nano- or DE10-Standard Board with an Soft-IP interface connected with the Lightweight HPS to FPGA Bridge to the Hard Processor System (HPS). 
+The ARM Cortex-A9 of the HPS run my embedded [*rsYocto*](https://github.com/robseb/rsyocto) Linux, customized for Intel SoC-FPGAs. 
+On rsYocto is the Django Framework with all necessary components, like the Apache-Webserver and the SQLite database, are pre-installed. 
+This approach is for controlling and management applications and cannot be consider for low latency real-time applications. 
+The advantage of the usage SQLite and HTTP with Linux is that these are standard in the desktop world. For these are for example API for connecting with cloud services available. 
 
-The following step by step guide shows how Django is able to log and present real sensor data in a web application. 
-
-The solution used here is very easy to implement, but cannot be seen as a professional one.
-
-The target of this demo is to show the accelerometer data of a Terasic DE10 Board inside a web browser.
-
-The latest version of Django with all necessary tools is pre-installed on [*rsYocto*](https://github.com/robseb/rsyocto), an embedded Linux System of Intel SoC-FPGAs and used as reference here.  
 
 
 # Creating a new Django Project
