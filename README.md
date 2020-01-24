@@ -1,4 +1,4 @@
-# Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA fabric and the FPGA configuration with the Django Framework
+# Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA fabric and change the FPGA configuration
 
 
  ![Alt text](pic/pic00.jpg?raw=true "Concept")
