@@ -638,142 +638,142 @@ As a second feature, we will build a management interface for changing the FPGA 
 At this point the ADC plot is empty, because no application has written to the database. This will be solved in the next steps.
 
 # Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase
-As it is shwon in the sequence diagram above the readout of the FPGA data is triggered by calling the URL *http://127.0.1:8181/ADCtriger*. Then the web interface starts an application to collect the ADC sensor data into the database. 
+As it is shwon in the sequence diagram above the readout of the FPGA data is triggered by calling the URL *http://127.0.1:8181/ADCtrigger*. Then the web interface starts an application to collect the ADC sensor data into the database. 
 
 To implement that two extensions of the project are required: 
  1.	A function handler, that calls this application and writes the received values to the database 
-  * Create a new python file called “services.py” (*DjangoFPGA/BoardInteraction/services.py*)
-  * Add the following code to it:
-    ````python
-    '''
-    Django FPGA Interaction demo application  - "sevices.py"
-    '''
-    import subprocess
+   * Create a new python file called “services.py” (*DjangoFPGA/BoardInteraction/services.py*)
+   * Add the following code to it:
+      ````python
+      '''
+      Django FPGA Interaction demo application  - "sevices.py"
+      '''
+      import subprocess
 
-    from BoardInteraction.models import ADCSensorReading, ADCchannel 
+      from BoardInteraction.models import ADCSensorReading, ADCchannel 
 
-    # For accessing the Project settings
-    from django.conf import settings
+      # For accessing the Project settings
+      from django.conf import settings
 
-    #
-    # Start a python application to read the ADC value 
-    # and write the value to a database
-    #
-    def ReadADCchannel():
-        # For every activ ADC Channel 
-        for sensor in ADCchannel.objects.all():   
-            adc_u = 0
-            # Start the Python Script "adcReadChannel.py" to read the ADC Channel
-            try: 
-                adc_u = float(subprocess.check_output(['python3',settings.BASE_DIR+'/BoardInteraction/adcReadChannel.py',str(sensor.ch)],stderr=subprocess.STDOUT, timeout=None))
-            except ValueError:
-                adc_u = 0
-                subprocess.call('echo Value Error ', shell=True)
+      #
+      # Start a python application to read the ADC value 
+      # and write the value to a database
+      #
+      def ReadADCchannel():
+          # For every activ ADC Channel 
+          for sensor in ADCchannel.objects.all():   
+              adc_u = 0
+              # Start the Python Script "adcReadChannel.py" to read the ADC Channel
+              try: 
+                  adc_u = float(subprocess.check_output(['python3',settings.BASE_DIR+'/BoardInteraction/adcReadChannel.py',str(sensor.ch)],stderr=subprocess.STDOUT, timeout=None))
+              except ValueError:
+                  adc_u = 0
+                  subprocess.call('echo Value Error ', shell=True)
 
-            # Write the value to the database
-            ADCSensorReading.reading = adc_u 
+              # Write the value to the database
+              ADCSensorReading.reading = adc_u 
 
-            newreading = ADCSensorReading(reading= ADCSensorReading.reading)
-            newreading.save()
-            sensor.readings.add(newreading)
-            sensor.save()
+              newreading = ADCSensorReading(reading= ADCSensorReading.reading)
+              newreading.save()
+              sensor.readings.add(newreading)
+              sensor.save()
 
-        return True
-        
-    ````
+          return True
+
+      ````
 2. An application to read an ADC Channel of the Soft-IP ADC interface
- * *service.py* will call the following python script to read the ADC
-   ````text
-   Django2FPGAdemo/DjangoFPGA/BoardInteraction/adcReadChannel.py 
-   ````
- * Create this file "adcReadChannel.py" on this location and add the following lines to it
-   ````python
-   #!/usr/bin/env python
-   # coding: utf-8
+  * *service.py* will call the following python script to read the ADC
+    ````text
+    Django2FPGAdemo/DjangoFPGA/BoardInteraction/adcReadChannel.py 
+    ````
+  * Create this file "adcReadChannel.py" on this location and add the following lines to it
+    ````python
+    #!/usr/bin/env python
+    # coding: utf-8
 
-   '''
-   @disc:  Single Shoot ADC Channel readout (Analog Devices LTC2308)
-           Fast way over the virtual memory
+    '''
+    @disc:  Single Shoot ADC Channel readout (Analog Devices LTC2308)
+            Fast way over the virtual memory
 
-   @date:   21.01.2020
-   @device: Intel Cyclone V 
-   @author: Robin Sebastian
-            (https://github.com/robseb)
-   '''
-   import os
-   import time
-   import math
-   import sys
-   # 
-   # This demo uses the python class "devmen" (https://github.com/kylemanna/pydevmem)
-   # be sure that this file is on the same directory 
-   #
-   import devmem
+    @date:   21.01.2020
+    @device: Intel Cyclone V 
+    @author: Robin Sebastian
+             (https://github.com/robseb)
+    '''
+    import os
+    import time
+    import math
+    import sys
+    # 
+    # This demo uses the python class "devmen" (https://github.com/kylemanna/pydevmem)
+    # be sure that this file is on the same directory 
+    #
+    import devmem
 
-   # the Lightweight HPS-to-FPGA Bus base address offset
-   HPS_LW_ADRS_OFFSET = 0xFF200000 
+    # the Lightweight HPS-to-FPGA Bus base address offset
+    HPS_LW_ADRS_OFFSET = 0xFF200000 
 
-   # LTC2308 Address offset
-   ADC_ADDRES_OFFSET = 0x40
+    # LTC2308 Address offset
+    ADC_ADDRES_OFFSET = 0x40
 
-   # Register set of the LTC2308
-   ADC_CMD_REG_OFFSET  = 0x0
-   ADC_DATA_REG_OFFSET = 0x4
-
-
-   ### FIFO Convention Data Size for average calculation
-   FIFO_SIZE = 255 # MAX=1024 
-
-   if __name__ == '__main__':
-
-       # Read selected ADC Channel as input argument [1]
-       # python3 adcReadChannl <CH> 
-       ch = 0
-       ch_selet = str(sys.argv[1])
-
-       try: 
-           ch = int(ch_selet)
-       except ValueError:
-           ch = 0
-
-       if(not(ch >=0 and ch < 6)):
-           ch = 0
-
-       # open the memory Access to the Lightweight HPS-to-FPGA bridge
-       #                  (Base address, byte length to acceses, interface)
-       de = devmem.DevMem(HPS_LW_ADRS_OFFSET, ADC_ADDRES_OFFSET+0x8, "/dev/mem")
+    # Register set of the LTC2308
+    ADC_CMD_REG_OFFSET  = 0x0
+    ADC_DATA_REG_OFFSET = 0x4
 
 
-       # Set FIFO size for ADC value averaging
-       de.write(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,[FIFO_SIZE])
+    ### FIFO Convention Data Size for average calculation
+    FIFO_SIZE = 255 # MAX=1024 
 
-       # Enable the convention with the selected Channel
-       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
-       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x01])
-       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
+    if __name__ == '__main__':
 
-       timeout = 300 #ms
-       # Wait until convention is done or a timeout occurred
-       while (not(timeout == 0)):
-           if(de.read(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET,1)[0] & (1<<0)): 
-               break
+        # Read selected ADC Channel as input argument [1]
+        # python3 adcReadChannl <CH> 
+        ch = 0
+        ch_selet = str(sys.argv[1])
 
-           timeout = timeout -1
-           time.sleep(.001) # delay 1ms 
+        try: 
+            ch = int(ch_selet)
+        except ValueError:
+            ch = 0
 
-       # calculate the average of the FIFO
-       rawValue = 0
-       for i in range(FIFO_SIZE): 
-           rawValue = rawValue+ (de.read(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,1))[0]
+        if(not(ch >=0 and ch < 6)):
+            ch = 0
 
-       value = rawValue / FIFO_SIZE
+        # open the memory Access to the Lightweight HPS-to-FPGA bridge
+        #                  (Base address, byte length to acceses, interface)
+        de = devmem.DevMem(HPS_LW_ADRS_OFFSET, ADC_ADDRES_OFFSET+0x8, "/dev/mem")
 
-       # Convert ADC Value to Volage
-       volage = round(value/1000,2)
-       # print the Value
-       print(str(volage))
 
-   ````
+        # Set FIFO size for ADC value averaging
+        de.write(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,[FIFO_SIZE])
+
+        # Enable the convention with the selected Channel
+        de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
+        de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x01])
+        de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
+
+        timeout = 300 #ms
+        # Wait until convention is done or a timeout occurred
+        while (not(timeout == 0)):
+            if(de.read(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET,1)[0] & (1<<0)): 
+                break
+
+            timeout = timeout -1
+            time.sleep(.001) # delay 1ms 
+
+        # calculate the average of the FIFO
+        rawValue = 0
+        for i in range(FIFO_SIZE): 
+            rawValue = rawValue+ (de.read(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,1))[0]
+
+        value = rawValue / FIFO_SIZE
+
+        # Convert ADC Value to Volage
+        volage = round(value/1000,2)
+        # print the Value
+        print(str(volage))
+
+    ````
   # Configuring the plotting of an ADC Channel
   This Django application needs a new database entry for all ADC Channels to read.
   This will be stored inside the database “ADCchannel“. This is only possible by hand as an Admin with the admin interface. 
@@ -813,7 +813,7 @@ To implement that two extensions of the project are required:
 At this point only one ADC Value is inside the plot. To manually read the ADC channel it is possible to open
 the following URL with a web browser:
    ````txt
-   http://<iPv4-Address of the Board>:8181/ADCtriger 
+   http://<iPv4-Address of the Board>:8181/ADCtrigger 
    ```` 
 Then reload the application page. The new collected value is plotted now too. 
 
