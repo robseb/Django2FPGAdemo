@@ -793,10 +793,10 @@ To implement that two extensions of the project are required:
    ![Alt text](pic/pic06.jpg?raw=true "Django Adim interface - add Channel 1")
    
 * Then insert the following to the web form to add a new Sensor to the ADC Channel
- * **Name**:   The name of the Sensor
- * **Slug**:   A unique ID for the Sensor 
- * **Reading**: The databebase with all sensor values
- * **CH**:      The choosed ADC Channel
+   * **Name**:   The name of the Sensor
+   * **Slug**:   A unique ID for the Sensor 
+   * **Reading**: The databebase with all sensor values
+   * **CH**:      The choosed ADC Channel
  
  
  ![Alt text](pic/pic07.jpg?raw=true "Django Adim interface - add Channel 2")
