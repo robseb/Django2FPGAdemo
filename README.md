@@ -303,7 +303,6 @@ As a second feature, we will build a management interface for changing the FPGA 
   
  * Here are all created databases accessible
  * At this point it is possible to add the sensor data manuelly 
- (Hier ggf. manuel ein wert einfuegen)
  
  
  ## Presenting the Sensor Data and FPGA configuration on a web page
