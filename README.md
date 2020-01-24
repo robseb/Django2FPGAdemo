@@ -11,12 +11,25 @@ Complex web interfaces for controlling and monitoring of embedded systems are st
 To demonstrate that, is the ADC converter (*Analog Devices LTC2308*) of a *Terasic DE10-Nano*- or *DE10-Standard* Board (Intel Cyclon V SoC-FPGA) with an Soft-IP interface connected with the *Lightweight HPS to FPGA Bridge* to the Hard Processor System (HPS). 
 On the ARM Cortex-A9 of the HPS run my embedded Linux, called [*rsYocto*](https://github.com/robseb/rsyocto), customized for Intel SoC-FPGAs. 
 
-On *rsYocto* is the **Django Framework  (Version 3.01)** with all necessary components, like the **Apache-Webserver** and the **SQLite database**, are pre-installed. 
+On *rsYocto* is the **Django Framework  (Version 3.0.2)** with all necessary components, like the **Apache-Webserver** and the **SQLite database**, are pre-installed. 
 
 **This approach is the monitoring and management of embedded FPGA systems with a web interface**. This cannot be consider for low latency real-time applications. 
 The advantage of the usage of SQLite and HTTP with Linux is that these are standard in the desktop world. Is allows for example to connect the data with a cloud service by adding a few extansions.
 
 <br>
+
+
+### Screenshot of the Web interface
+
+![Alt text](pic/FinalWebinterface.PNG?raw=true "Screenshot of the final Web interface")
+<br>
+
+* **Features** 
+  * **Plotting the ADC convention voltage from a Soft-IP ADC**
+  * **Uploading and managing of FPGA configuration files**
+  * **Configuration of the FPGA fabric**
+  * **Controlling a FPGA LED**
+
 
 ### Reading a Sensor Value with the Django web framework - Sequence Diagram
 
@@ -33,10 +46,36 @@ This is one example approaches for the final application. The interface for mana
 <br>
 
 
-### Screenshot of the Web interface
 
-![Alt text](pic/FinalWebinterface.PNG?raw=true "Screenshot of the final Web interface")
+### Table of Content
 
+1. **Preparations**
+2. **Installing the finshed version** 
+3. **Creating a new Django Project**
+
+# Preparations 
+* Install the latest Version of [*rsYocto*](https://github.com/robseb/rsyocto) onto a SD-Card and boot it up (as descipt [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
+* For the Python and Django development, I recommend remote the development with Microsoft Visual Studio Code Insider
+ * A setup guide is available [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)  
+* `Django 3.0.2` is already pre-installed on *rsYocto*
+
+
+# Testing the finshed version
+
+For installing and testing of the finish project do following steps:
+* Clone this repository by executing following Linux Terminal command on *rsYocto*
+  ````bash
+  git clone https://github.com/robseb/Django2FPGAdemo.git
+  ````
+* Navigate inside the project folder
+  ````bash
+  cd DjangoFPGA
+  ````
+ * Use the next command to start the web server (here on Port 8181)
+ ````bash
+ python3 manage.py runserver 0:8181
+ ````
+ ddsddsdddssdf
 
 # Creating a new Django Project
 
