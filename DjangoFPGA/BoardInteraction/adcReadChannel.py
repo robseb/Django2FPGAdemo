@@ -2,7 +2,7 @@
 # coding: utf-8
 
 '''
-@disc:  ADC readout Sensor Test (Analog Devices LTC2308)
+@disc:  Single Shoot ADC Channel readout (Analog Devices LTC2308)
         Fast way over the virtual memory
            
 @date:   21.01.2020
@@ -38,10 +38,9 @@ if __name__ == '__main__':
    
     # Read selcted ADC Channel as input argument [1]
     # python3 adcReadChannl <CH> 
-    
     ch = 0
-    
     ch_selet = str(sys.argv[1])
+
     try: 
         ch = int(ch_selet)
     except ValueError:
@@ -57,22 +56,21 @@ if __name__ == '__main__':
 
     # Set meassure number for ADC convert
     de.write(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,[FIFO_SIZE])
-    # Enable the convention with CH0 
+    # Enable the convention with the selected Channel
     de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
     de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x01])
     de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
     
     timeout = 300 #ms
-    # Wait untis convention is done or timeout
+    # Wait until convention is done or a timeout occurred
     while (not(timeout == 0)):
-        
         if(de.read(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET,1)[0] & (1<<0)): 
             break
 
         timeout = timeout -1
         time.sleep(.001) # delay 1ms 
 
-    # Avarage FIFO values
+    # calculate the average of the FIFO
     rawValue = 0
     for i in range(FIFO_SIZE): 
         rawValue = rawValue+ (de.read(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,1))[0]
@@ -81,5 +79,6 @@ if __name__ == '__main__':
 
     # Convert ADC Value to Volage
     volage = round(value/1000,2)
+    # print the Value
     print(str(volage))
     
