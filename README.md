@@ -14,7 +14,7 @@ On the ARM Cortex-A9 of the HPS run my embedded Linux, called [*rsYocto*](https:
 On *rsYocto* is the **Django Framework  (Version 3.01)** with all necessary components, like the **Apache-Webserver** and the **SQLite database**, are pre-installed. 
 
 **This approach is the monitoring and management of embedded FPGA systems with a web interface**. This cannot be consider for low latency real-time applications. 
-The advantage of the usage SQLite and HTTP with Linux is that these are standard in the desktop world. For these are for example API for connecting with cloud services available. 
+The advantage of the usage of SQLite and HTTP with Linux is that these are standard in the desktop world. Is allows for example to connect the data with a cloud service by adding a few extansions.
 
 <br>
 
