@@ -49,14 +49,14 @@ This is one part of the final application. The interface for managing FPGA Confi
 
 ### Table of Content
 
-1. [**Preparations**](https://github.com/robseb/Django2FPGAdemo#preparations)
-2. [**Installing the finshed version**](https://github.com/robseb/Django2FPGAdemo#testing-the-finished-version)
-3. [**Creating a new Django Project**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-project)
-4.[**Creating a new Django App to interact with the FPGA fabric**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-to-interact-with-the-fpga-fabric)
+1. [**Project Preparations**](https://github.com/robseb/Django2FPGAdemo#preparations)
+2. [**Installing the finshed Web interface**](https://github.com/robseb/Django2FPGAdemo#testing-the-finished-version)
+3. [**Creating a new Django Project on the SoC-FPGA**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-project)
+4. [**Creating a new Django App to interact with the FPGA fabric**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-to-interact-with-the-fpga-fabric)
 5. [**Testing the Web Appilcation**](https://github.com/robseb/Django2FPGAdemo#testing-the-appilcation)
-6. [**Reading the ADC and writing the data into a datbase**](Reading the ADC and writing the data into a datbase)
-7. [**Configure the plotting of a ADC Channel**](https://github.com/robseb/Django2FPGAdemo#configure-the-plotting-of-a-adc-channel)
-8. [**Reading the ADC Channel and polting the data time triggered**](https://github.com/robseb/Django2FPGAdemo#reading-the-adc-channel-and-polting-the-data-time-triggered)
+6. [**Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase**](Reading the ADC and writing the data into a datbase)
+7. [**Configuring the plotting of an ADC Channel**](https://github.com/robseb/Django2FPGAdemo#configure-the-plotting-of-a-adc-channel)
+8. [**Reading the and plotting the data time triggered**](https://github.com/robseb/Django2FPGAdemo#reading-the-adc-channel-and-polting-the-data-time-triggered)
 ___
 
 # Preparations 
