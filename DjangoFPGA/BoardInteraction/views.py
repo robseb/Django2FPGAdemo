@@ -1,5 +1,5 @@
 '''
-Django FPGA Interaction demo application  - "admin.py"
+Django FPGA Interaction demo application  - "views.py"
 '''
 
 from django.http import Http404
