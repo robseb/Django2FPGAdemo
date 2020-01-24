@@ -460,7 +460,7 @@ As a second feature, we will build a management interface for changing the FPGA 
       ````
 
   * The *render*-function uses the "*DisplayTemplate.html*" HTML file to build the canvas of the web interface
-  * Django only looks for this kind of template file in this folder structure: *<App>/templates/<App>/
+  * Django only looks for this kind of template file in this folder structure: *<App>/templates/<App>/*
   * That meens here, that this file must be located at here:
     ````txt
     DjangoFPGA/BoardInteraction/templates/BoardInteraction/DisplayTemplate.html
@@ -468,7 +468,7 @@ As a second feature, we will build a management interface for changing the FPGA 
     * Creat the file with all folders with *Visual Studio Code Insider*
   * For building a simple UI add the following to the HTML file:
     ````html
-    <!-- Django accelerometer demo application - AccSensor/AccDisplayTemplate.html -->
+    <!-- Django FPGA Interaction demo application - DisplayTemplate.html -->
     <!DOCTYPE HTML>
     <html>
       <head>
@@ -479,30 +479,67 @@ As a second feature, we will build a management interface for changing the FPGA 
         <title>rsYocto Django Demo</title>
       </head>
       <body>
+        <center>
+        <p><embed src="https://raw.githubusercontent.com/robseb/rsyocto/rsYocto-1.03/doc/symbols/rsYoctoLogo.jpg?raw=true" width="300" height="120" title="rsYocto Logo" /></p>
+        <h2>Simple Django demo application for using a web interface to control and access the FPGA fabric</h2>
+        <br>
         <!--Load the ploty UI-->
+        <h3>FPGA IP data plot </h3>
+
         {% autoescape off %}
         {{ plot_div }}
         {% endautoescape %}
+        <br>  
 
-        <!--Show the raw sensor data in a table-->
-        <table>
-          <tr>
-            <th>Data</th>
-            <th>author</th>
-          </tr>
-          {% for b in obj %}
-          <tr>
-            <td>{{ b.reading }}</td>
-          </tr>
-          {% endfor %}
+        <!--Show the FPGA Configuration File upload box-->
+        <h3>Chnage the FPGA Configuration </h3>
+        <form action="{% url 'main' %}" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <p>{{ form.non_field_errors }}</p>
+              <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+              <p>
+                  {{ form.docfile.errors }}
+                  {{ form.docfile }}
+              </p>
+              <p><input type="submit" value="Upload"/></p>
+          </form>
+            <!--Show the FPGA Configuration File upload box-->
+          <br>
+          <h3>FPGA configuration manager </h3>
+          <h4>List of all saved FPGA configuration files</h4>
+          {% if documents %}
+          <ul>
+            <table  border="1">
+              <tr>
+                <th>File Name</th>
+                <th>Upload Date</th>
+                <th>Load to the FPGA fabric</th>
+              </tr>
+            {% for document in documents %}
+                  <tr>
+                    <td>{{document.docfile.name}}</td>
+                    <td>{{document.timestamp}}</td>
+                    <td><a href="{% url 'scriptFPGAconf' %}?subjectID={{document.docfile.url}}">Configure FPGA</a></td>
+                  </tr>
+            {% endfor %}
+            <tr>
+              <td>Bootloader FPGA Configuration</td>
+              <td>-</td>
+              <td><a href="{% url 'BootloaderFPGAconf' %}">Roll back</a></td>
+            </tr>
         </table>
 
-        <!--Create two push buttons to control the FPGA LED 0-->
-        <button onclick="location.href='{% url 'scriptLED0N' %}'">LED 0 ON</button>
-        <button onclick="location.href='{% url 'scriptLED0F' %}'">LED 0 OFF</button>
-        <!-- {% url 'scriptLED0N' %} -> triggers jump to URL "<IPv4-Address>/scriptLED0N" by push event -->
-
-      </body>
+          </ul>
+        {% else %}
+            <p>No documents.</p>
+        {% endif %}
+          <!--Create two push buttons to control the FPGA LED 0-->
+          <br>
+          <h4>FPGA LED 0 Control </h4>
+          <button onclick="location.href='{% url 'scriptLED0N' %}'">LED 0 ON</button>
+          <button onclick="location.href='{% url 'scriptLED0F' %}'">LED 0 OFF</button>
+          </center>
+        </body>
     </html>  
     ````
 
@@ -512,21 +549,33 @@ As a second feature, we will build a management interface for changing the FPGA 
     (Pic06)
 * To link the front page to the "AccSensor"-App with the previosly created UI at the following lines of code in the global url configurations (*DjangoFPGA/DjangoSensor/urls.py*):
   ````python
+  # DjangoFPGA URL Configuration
   from django.contrib import admin
   from django.urls import path
 
-  # Include the "AccSensor" App  
-  from AccSensor import views
+  # Include the "BoardInteraction" App  
+  from BoardInteraction import views
 
   # URL linkages of this project 
   urlpatterns = [
-      path('', views.detail),                              # Front page -> linked to the "AccSensor" App 
-      path('admin/', admin.site.urls),                     # /admin     -> Admin interface
 
-      path('/LED0_ON',views.LED0_ON,name="scriptLED0N"),   # /LED0_ON   -> triggered by pushing the LED0 ON Button 
-      path('/LED0_OFF',views.LED0_OFF,name="scriptLED0F"), # /LED0_OFF  -> triggered by pushing the LED0 OFF Button 
+      # UI 
+      path('', views.detail,name="main"),                 # Front page -> linked to the "BoardInteraction" App 
+      path('admin/', admin.site.urls),                    # /admin     -> Admin interface
+
+      # HPS LED 0 
+      path('LED0_ON',views.LED0_ON,name="scriptLED0N"),   # /LED0_ON   -> triggered by pushing the LED0 ON Button 
+      path('LED0_OFF',views.LED0_OFF,name="scriptLED0F"), # /LED0_OFF  -> triggered by pushing the LED0 OFF Button 
+
       # e.g. views.LED0_ON is the name of the viewer function  
       # With e.g. the name="scriptLED0N" the linkage is taken to the HTML event handler: '{% url 'scriptLED0N' %}'
+
+      # FPGA Configuration 
+      path('FPGA',views.change_FPGAconfiguration,name="scriptFPGAconf"),
+      path('BOOTFPGA',views.change_FPGAconfigurationBack,name="BootloaderFPGAconf"),
+
+      # ADC Sensor Trigger
+      path('ADCtrigger',views.ADCtrigger,name="scriptADCtrigger")
   ]
   ````
 
