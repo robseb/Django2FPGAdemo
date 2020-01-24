@@ -279,7 +279,7 @@ As a second feature, we will build a management interface for changing the FPGA 
    
  ## Testing the Administrator page
  * Save all open files
- * To generate a mySQLite database with these settings execude the following Linux Shell commands (*DjangoFPGA/*):
+ * To generate a SQLite database with these settings execude the following Linux Shell commands (*DjangoFPGA/*):
    ````bash
    python3 manage.py makemigrations
    python3 manage.py migrate
