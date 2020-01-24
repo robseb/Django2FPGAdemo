@@ -53,13 +53,15 @@ This is one example approaches for the final application. The interface for mana
 2. **Installing the finshed version** 
 3. **Creating a new Django Project**
 
+___
+
 # Preparations 
-* Install the latest Version of [*rsYocto*](https://github.com/robseb/rsyocto) onto a SD-Card and boot it up (as descipt [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
-* For the Python and Django development, I recommend remote the development with Microsoft Visual Studio Code Insider
- * A setup guide is available [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)  
+
+* Boot up [*rsYocto*](https://github.com/robseb/rsyocto) on your Intel SoC-FPGA Board by following the [getting started Guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
+* Setup Visual Studio Code Insider with [this instructions](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
 * `Django 3.0.2` is already pre-installed on *rsYocto*
 
-
+___
 # Testing the finshed version
 
 For installing and testing of the finish project do following steps:
@@ -77,17 +79,19 @@ For installing and testing of the finish project do following steps:
  ````
  ddsddsdddssdf
 
+___
+<h3><u> Or build it by your own with this step by step guide: </u> </h3>
+<br>
+
 # Creating a new Django Project
 
-* Boot up [*rsYocto*](https://github.com/robseb/rsyocto) by following the [getting started Guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
-* Setup Visual Studio Code Insider with [this instructions](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
-* Use inside Visual Studio Code Insider the integrated Linux Terminal with the following command to create a new Django project with the name "DjangoFPGA":
+* Use in  *Visual Studio Code Insider*  integrated Linux Terminal to create with the following command a new Django project with the name "DjangoFPGA":
   ````bash
   django-admin startproject DjangoFPGA
   ````
   ![Alt text](pic/pic01.jpg?raw=true "Django Development with Visual Studio Code")
  
- * **Note:** Use in the drop-down menu (blue arrow) the point "sh" to access the Linux Terminal. In case the point is not there press the “**+**”-icon to add it. 
+ * **Note:** Use in the drop-down menu (blue arrow) the point "*sh*" to access the Linux Terminal. In case the point is not there press the “**+**”-icon to add it. 
  * Navigate with the Linux Terminal inside Visual Studio code to this project
   ````bash
   cd DjangoFPGA
@@ -97,13 +101,13 @@ For installing and testing of the finish project do following steps:
 
 * By default the Django web server is only reachable internally by the embedded Linux
 * To access Django applications within your network do following steps:
-  1. Open the Django project settings file (*settings.py*) with Visual Studio Code (as shown above) and allow everybody to connect with the following lines:
+  1. Open the Django project settings file (*settings.py*) with *Visual Studio Code* (as shown above) and allow everybody to connect with the following lines:
     ````python
     ALLOWED_HOSTS = [
      '*'
    ]
    ````
-  2. After any change of the settings file a migration of the project is necessary:
+  2. After any change of the settings file a **migration** of the project is necessary:
     ````bash
     python3 manage.py migrate 
     ````
@@ -131,7 +135,7 @@ For installing and testing of the finish project do following steps:
       Applying auth.0011_update_proxy_permissions... OK
       Applying sessions.0001_initial... OK
       ````
-  3. Use the next command to start the web server (here on Port 8181)
+  3. Use the next command to **start the web server** (here on Port 8181)
       ````bash
       python3 manage.py runserver 0:8181
       ````
@@ -161,11 +165,11 @@ For installing and testing of the finish project do following steps:
 * All **HTTP**-attaches are listed on the terminal as well
 
 
-# Creating a new Django read and show data from the FPGA fabric and to manage FPGA configurations
-Every Django project requiers at least one application. We will build an App to readout the Soft-IP ADC Interface  (*Analog Devices LTC2308*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
-As a secound feature it is also shown how to build with the Django Franework a Web application to configure the FPGA fabric and to mange all uploaded configuration files
+# Creating a new Django to interact with the FPGA fabric
+Every Django project requires at least one application (App). We will build an App to readout the Soft-IP ADC Interface (*Analog Devices LTC2308*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
+As a second feature, we will build a management interface for changing the FPGA configuration. 
 
-*  The following command adds a new app called "BoardInteraction" to the project.
+*  The following command adds a new app called "*BoardInteraction*" to the project.
    ````bash
    python3 manage.py startapp BoardInteraction
    ````
@@ -175,7 +179,7 @@ As a secound feature it is also shown how to build with the Django Franework a W
   
   ![Alt text](pic/pic03.jpg?raw=true "Django Folder structure")
   
-* Add this application to the Django project by adding the following line *settings.py* to the variable **INSTALLED_APPS**:
+* Add this application to the Django project by adding the following line to the variable **INSTALLED_APPS** iniside  *settings.py*:
   ````python
   # Application definition
   INSTALLED_APPS = [
@@ -188,13 +192,13 @@ As a secound feature it is also shown how to build with the Django Franework a W
       'django.contrib.staticfiles',
   ]
   ````
-  * **Note:** This is a connection to the function *BoardinteractionConfig()* that is located in the *"app.py"* file
-  * Migrate the project again
+  * **Note:** This is a connection to the *main-function* *BoardinteractionConfig()* that is located in the *"app.py"* file
+  * **Migrate** the project again
    ````bash
    python3 manage.py migrate 
    ````
 
-### Creating a model to store the accelerometer data into a mySQLite database
+### Creating a model to store the Sensor data and FPGA configuration files into a SQLite database
 * Add the following python code to the model file (*DjangoFPGA/BoardInteraction/models.py*)
   ````python
   '''
@@ -202,30 +206,35 @@ As a secound feature it is also shown how to build with the Django Franework a W
   '''
   from django.db import models
   from datetime import datetime
+   #
+   # Class for reading a analog Sensor 
+   #
+   class ADCSensorReading(models.Model):
+       # Sensor value as Char Text Field type   
+       reading = models.FloatField()         
+       timestamp = models.DateTimeField(default=datetime.now, db_index=True)    # Time stamp
 
-  #
-  # Class for reading a analog Sensor 
-  #
-  class ADCSensorReading(models.Model):
-      reading = models.CharField(max_length=20)           # Sensor value as Char Text Field type 
-                                                          # max 20 characters 
-      timestamp = models.DateTimeField(default=datetime.now, db_index=True)    # Time stamp
+       def __unicode__(self):
+           return self.reading
 
-      def __unicode__(self):
-          return self.reading
+   # 
+   # Class for connecting a Analog Devices LTC LTC2308 ADC Channel
+   #
+   class ADCchannel(models.Model):
+       name     = models.CharField(max_length=200)          # a name for the Sensor on the ADC Channel
+       slug     = models.SlugField(unique=True)             # an unique working handler name
+       readings = models.ManyToManyField(ADCSensorReading)  # the sensor data object
+       ch       = models.IntegerField() # the used ADC Channel Number
 
-  # 
-  # Class for connecting a Analog Devices LTC LTC2308 ADC Channel
-  #
-  class ADCchannel(models.Model):
-      name     = models.CharField(max_length=200)          # a name for the Sensor on the ADC Channel
-      slug     = models.SlugField(unique=True)             # an unique working handler name
-      readings = models.ManyToManyField(ADCSensorReading)  # the sensor data object
-      ch       = models.IntegerField()                     # the used ADC Channel Number
+       def __unicode__(self):
+           return self.name
 
-      def __unicode__(self):
-          return self.name
-
+   # 
+   # FPGA .rbf Configuration File Database
+   # 
+   class FPGAconfFiles(models.Model):
+       docfile = models.FileField(upload_to='FPGAconfigDatabase/%Y/%m/%d')      # local storge folder  
+       timestamp = models.DateTimeField(default=datetime.now, db_index=True)    # Time stamp
   ````
  
  ### Creating an Administrator page to allow an access to the database
@@ -246,16 +255,17 @@ As a secound feature it is also shown how to build with the Django Franework a W
    '''
 
    from django.contrib import admin
-   from BoardInteraction.models import ADCSensorReading, ADCchannel
+   from BoardInteraction.models import ADCSensorReading, ADCchannel, FPGAconfFiles
 
-   # Allow access to all ADC data models inside the MySQLite Database
+   # Allow access to all ADC data models and FPGA configuration files inside the SQLite Database
    admin.site.register(ADCchannel)
    admin.site.register(ADCSensorReading)
+   admin.site.register(FPGAconfFiles) 
 
    # Personalisation of the admin page
-   admin.site.site_header = 'rsYocto'                               # Headline title           
-   admin.site.index_title = 'Django Sensor Demo Administration'     # Sub-Headline title       
-   admin.site.site_title = 'rsYocto'                                # HTML Headline
+   admin.site.site_header = 'rsYocto'                                         # Headline title           
+   admin.site.index_title = 'Django FPGA interaction Demo Administration'     # Sub-Headline title       
+   admin.site.site_title = 'rsYocto'                                          # HTML Headline
    ````
    
  ### Testing the Administrator page
@@ -282,81 +292,128 @@ As a secound feature it is also shown how to build with the Django Franework a W
  
   ![Alt text](pic/pic05.jpg?raw=true "Django Adim interface")
   
- * Here is the content of the database with the table "*Accsensor*" accessible
+ * Here are all created databases accessible
  * At this point it is possible to add the sensor data manuelly 
  (Hier ggf. manuel ein wert einfuegen)
  
-  ### Presenting the Sensor Data and control the FPGA LED on a web page
+  ### Presenting the Sensor Data and FPGA configuration on a web page
   * To view this data in a graphic the Libary [plotly](https://plot.ly/python/) is used
-    * That is by far the easiest way to implement such kind of UI-elemets to a web page, but really unefficient as well
-  * To display live date of the accelerometer it is necessary to add some lines of code to the "*views.py*"-file on the App (*DjangoFPGA/AccSensor/views.py*):
+    * That is a easay way to implement such kind of UI-elemets to a web page, but really unefficient as well
+  * To display something on a web page it is necessary to add some lines of code to the "*views.py*"-file (*DjangoFPGA/AccSensor/views.py*):
   ````python
   '''
-  Django accelerometer demo application - "views.py"
+  Django FPGA Interaction demo application  - "admin.py"
   '''
 
   from django.http import Http404
   from django.shortcuts import render, HttpResponse, HttpResponseRedirect
-  from .models import AccSensorReading
+  from .models import ADCSensorReading
   from subprocess import call
 
   # use "pip install plotly" to add this package
   from plotly.graph_objs import Scatter
   from plotly.offline import plot 
+  import plotly.graph_objects as go
 
+
+  # For accessing the FPGA configuration
   from subprocess import call
 
+  # For working with a file upload box 
+  from .forms import DocumentForm
+  from .models import FPGAconfFiles
+
+  # For accessing the the Project settings
+  from django.conf import settings
+
+  # import trigger function for reading the ADC
+  from BoardInteraction.services import ReadADCchannel
+
+
   # 
-  # View the current Sensor data 
+  # View the current ADC Channel Sensor data 
+  # FPGA LED and FPGA Fabric interface
   #
   def detail(request):
+
+       # Handle file upload for the FPGA configuration file
+      if request.method == 'POST':
+          form = DocumentForm(request.POST, request.FILES)
+          if form.is_valid(): 
+              # Upload the File to the Database
+              newdoc = FPGAconfFiles(docfile = request.FILES['docfile'])
+              newdoc.save()
+              # Write FPGA Configuration
+              call('FPGA-writeConfig -f '+settings.BASE_DIR+"/"+newdoc.docfile.url, shell=True)
+      else:
+          form = DocumentForm() 
+
+      # Load all stored FPGA configuration files
       try:
-          accSensor = AccSensorReading.objects.all()     # Read the latest sensor object
-      except AccSensorReading.DoesNotExist:        
-          raise Http404("Accelerometer data does not exist")  # In case of an Error display an Error 404 Screeen
+          FPGAconfigFiles = FPGAconfFiles.objects.all()
+      except ADCSensorReading.DoesNotExist:   
+          raise Http404("FPGA Configuration data does not exist")
 
-      # Show the template file "AccDisplayTemplate.html" with the current object
-      #time.sleep(.500)
+      # Load the ADC Value database
+      try:
+          adcChvalue = ADCSensorReading.objects.all() 
+      except ADCSensorReading.DoesNotExist:        
+          raise Http404("ADC data does not exist")  # In case of an Error display an Error 404 Screeen
 
-      # We want to show the last 50 messages, ordered most-recent-last
-      accData = accSensor.order_by('-timestamp')[:50]
+      ### Plot the ADC Values #####
 
-      i=0
+      # We want to show the last 100 messages, ordered most-recent-last
+      adcData = adcChvalue.order_by('-timestamp')[:100]
+
       y_data= []
       x_data= []
 
-      for b in accData:
+      for b in adcData:
           y_data.append(b.reading)
-          x_data.append(i)
-          i=i+1
+          x_data.append(b.timestamp)
 
-      plot_div = plot([Scatter(x=x_data, y=y_data,
-                          mode='lines', name='test',
-                          opacity=0.8, marker_color='green')],
-                 output_type='div',include_plotlyjs=False)
+      fig = go.Figure()
+      # Create and style traces
+      fig.add_trace(go.Scatter(x=x_data, y=y_data, name='Sensor Voltage',
+                              line = dict(color='royalblue', width=4, dash='dashdot')))
+      # Edit the layout
+      fig.update_layout(title='Plot of recorded ADC data from a Soft IP-interface',
+                      xaxis_title='Time (UTC)  [HH:MM:SS]',
+                      yaxis_title='ADC Voltage (V)')
 
-      return render(request, "AccSensor/AccDisplayTemplate.html", context=
+      # store the plot object 
+      plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+      # render the HTML template with all values
+      return render(request, "BoardInteraction/DisplayTemplate.html", context=
       { 
-          'plot_div': plot_div,
-          'obj':accData    
+          'plot_div': plot_div,           # Plot object 
+          'obj':adcData,                  # ADC raw data 
+          'documents': FPGAconfigFiles,   # FPGA Configuration files 
+          'form': form                    # Upload File form
       })
-
-  ````
+   ````
   * With this functions two events are declared, this allows to control the HPS with a push of the button LED 0:
     * Add them to "*views.py*"-file as well
     ````python
-      def LED0_ON(request):
-          # Turn FPGA LED0 on 
-          call('FPGA-writeBridge -lw 20 -b 0 1 -b', shell=True)
-          # Relaod the main app page again 
-          return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+     #
+     # Function to turn FPGA LED 0 on 
+     #
+     def LED0_ON(request):
+         # Turn FPGA LED0 on 
+         call('FPGA-writeBridge -lw 20 -b 0 1 -b', shell=True)
+         # Relaod the main app page again 
+         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-      def LED0_OFF(request):
-          # Turn FPGA LED0 off
-          call('FPGA-writeBridge -lw 20 -b 0 0 -b', shell=True)
-          # Relaod the main app page again 
-          return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+     #
+     # Function to turn FPGA LED 0 off 
+     #
+     def LED0_OFF(request):
+         # Turn FPGA LED0 off
+         call('FPGA-writeBridge -lw 20 -b 0 0 -b', shell=True)
+         # Relaod the main app page again 
+         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
      ````
 
   * The *render*-function uses the "*DisplayTemplate.html*" HTML file to build the canvas of the web interface
