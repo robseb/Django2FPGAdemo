@@ -1,5 +1,5 @@
 '''
-Django accelerometer demo application - "views.py"
+Django FPGA Interaction demo application  - "admin.py"
 '''
 
 from django.http import Http404
