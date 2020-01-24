@@ -38,7 +38,7 @@ The following sequence Diagram shows all involved actors and the data flow by re
 
 A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then Django adds the value with a time stamp to the *SQLite* database. 
 
-To repeat and time sync the readout of the ADC can be a Shell script or the tool “crontab” considered.
+To repeat and time sync the readout of the ADC a Shell script or the tool `crontab` can be considered.
 
 In case an user is going to open the web application, Django loads the complete data of the ADC from the database and plots them graphically into the webpage.  
 This is one part of the final application. The interface for managing FPGA Configurations works similarly. 
@@ -341,12 +341,12 @@ As a second feature, we will build a management interface for changing the FPGA 
 
 
     # 
-    # View the current ADC Channel Sensor data 
-    # FPGA LED and FPGA Fabric interface
+    # Called in case the user opened the main web page of the App
+    # the complete UI will be built and transmitted to the web browser
     #
     def detail(request):
 
-         # Handle file upload for the FPGA configuration file
+        # Handle file upload for the FPGA configuration file
         if request.method == 'POST':
             form = DocumentForm(request.POST, request.FILES)
             if form.is_valid(): 
@@ -374,7 +374,8 @@ As a second feature, we will build a management interface for changing the FPGA 
 
         # Plot the latest 100 data points in time order 
         adcData = adcChvalue.order_by('-timestamp')[:100]
-
+        
+        # pre-process the ADC data of the database
         y_data= []
         x_data= []
 
@@ -382,8 +383,8 @@ As a second feature, we will build a management interface for changing the FPGA 
             y_data.append(b.reading)
             x_data.append(b.timestamp)
 
+        # create a new line plot element 
         fig = go.Figure()
-        # Create and style traces
         fig.add_trace(go.Scatter(x=x_data, y=y_data, name='Sensor Voltage',
                                 line = dict(color='royalblue', width=4, dash='dashdot')))
         # Edit the layout
@@ -407,8 +408,8 @@ As a second feature, we will build a management interface for changing the FPGA 
   * For displaying the FPGA Configuration management interface extend the *views.py*-file with the following lines of python code 
     ```python
     #
-    # Called in case the user selected a FPGA Configuration 
-    # file from the Database list
+    # If the user select a FPGA Configuration file this function will be called 
+    # to insert the file to the data base and the FPGA will be configured with it
     #
     def change_FPGAconfiguration(request):
         # <URL>/?subjectID=<Configuration file path>
@@ -422,8 +423,7 @@ As a second feature, we will build a management interface for changing the FPGA 
 
 
     #
-    # Called in case the user selected the Bootloader FPGA Configuration 
-    # file from the Database list
+    # If the user select the rool back to the boot FPGA Configuration this function will be called 
     #
     def change_FPGAconfigurationBack(request):
         # <URL>/?subjectID=<Configuration file path>
@@ -436,7 +436,7 @@ As a second feature, we will build a management interface for changing the FPGA 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     ```
     * These are two event functions, which are triggered in the case a FPGA-Configuration button was pressed
-  * To allow to collect and update the ADC Sensor data add following function to the *"views.py"*-file
+  * To allow to collect and update the ADC Sensor data add the following function to the *"views.py"*-file
     ````python
     #
     # ADC Store data trigger function 
@@ -446,11 +446,11 @@ As a second feature, we will build a management interface for changing the FPGA 
         return HttpResponse('')
     ````
 
-  * With this functions two events are declared, this allows to control the FPGA LED 0 with a push of the button:
-    * Add them to "*views.py*"-file as well
+  * With these functions two events are declared, this allows to control the FPGA LED 0 with a push button:
+    * Add them to the "*views.py*"-file as well
      ````python
       #
-      # Function to turn FPGA LED 0 on 
+      # Function to turn FPGA LED 0 on called in case the ON-button was pressed 
       #
       def LED0_ON(request):
           # Turn FPGA LED0 on 
@@ -460,7 +460,7 @@ As a second feature, we will build a management interface for changing the FPGA 
 
 
       #
-      # Function to turn FPGA LED 0 off 
+      # Function to turn FPGA LED 0 off called in case the OFF-button was pressed 
       #
       def LED0_OFF(request):
           # Turn FPGA LED0 off
@@ -471,7 +471,7 @@ As a second feature, we will build a management interface for changing the FPGA 
 
   * The *render*-function uses the "*DisplayTemplate.html*" HTML file to build the canvas of the web interface
   * Django only looks for this kind of template file in this folder structure: *<App>/templates/<App>/*
-  * That meens here, that this file must be located at here:
+  * That meens, that this file must be located here:
     ````txt
     DjangoFPGA/BoardInteraction/templates/BoardInteraction/DisplayTemplate.html
     ````
@@ -513,7 +513,7 @@ As a second feature, we will build a management interface for changing the FPGA 
               </p>
               <p><input type="submit" value="Upload"/></p>
           </form>
-            <!--Show the FPGA Configuration File upload box-->
+          <!--Show a list of all stored FPGA configuration files-->
           <br>
           <h3>FPGA configuration manager </h3>
           <h4>List of all saved FPGA configuration files</h4>
@@ -552,9 +552,9 @@ As a second feature, we will build a management interface for changing the FPGA 
         </body>
     </html>  
     ````
-* To show a File Upload box for the selecting of a FPGA configuration file are these steps requiered
+* To show a File Upload box for the selecting of a FPGA configuration file these steps are requiered
  * Create inside the App the new file "*form.py*" (*DjangoFPGA/BoardInteraction/forms.py*)
- * Add following code to this file
+ * Add the following code to this file
    ````python
    '''
    Django FPGA Interaction demo application - "form.py"
@@ -574,7 +574,7 @@ As a second feature, we will build a management interface for changing the FPGA 
    ````
 ## Routing the URLs of the Application
 * By default nothing will be routed to the front page of this application (http://<iPv4-Address of the Board>:8181/)
-* To link the front page to the "AccSensor"-App with the previosly created UI at the following lines of code in the global url configurations (*DjangoFPGA/DjangoFPGA/urls.py*):
+* To link the front page to the App, add the following lines of code to the global url configuration file (*DjangoFPGA/DjangoFPGA/urls.py*):
   ````python
   # DjangoFPGA URL Configuration
   from django.contrib import admin
@@ -607,10 +607,9 @@ As a second feature, we will build a management interface for changing the FPGA 
   ````
   * Save all open files
 
- ## Testing the Web Appilcation 
- * Now all configurations of the user elements of these applications are done and it is time to test this state
- * Save all open files
- * Import the Python pip-package "plotly" that is used for the plotting of the data:
+ ## Testing the Web Application 
+ * Now all configurations of the user elements are done and it is time to test this state
+ * Import the Python pip-package "plotly" using for the plotting of the data:
   ````bash
   pip install plotly
   ````
@@ -631,18 +630,18 @@ As a second feature, we will build a management interface for changing the FPGA 
  * The front page should now look like this: 
    (Pic07)
  * Test the Webinterface:
-   * Chnage the FPGA configuration (the required type is described [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md))
- * Turn the FPGA LED on or off
+   * Change the FPGA configuration (the required type is described [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md))
+ * Turn the FPGA LED ON or OFF
  
-At this point is the ADC plot empty, because one write the value to the database. This will be solved in the next step.
+At this point the ADC plot is empty, because no application has written to the database. This will be solved in the next steps.
 
 # Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase
-As in the sequence diagram is the readout of the ADC triggered be calling the URL *http://127.0.1:8181/ADCtriger*. Then starts Django application to collect the ADC sensor data and writes them to a database. 
+As it is shwon in the sequence diagram above the readout of the FPGA data is triggered by calling the URL *http://127.0.1:8181/ADCtriger*. Then the web interface starts an application to collect the ADC sensor data into the database. 
 
-To implement that are two extension to the project requiered required: 
- 1.	A function to start an application to read the data and write them to the database 
-  * Create a new python file called “services.py” s (*DjangoFPGA/BoardInteraction/services.py*)
-  * Add following to it:
+To implement that two extensions of the project are required: 
+ 1.	A function handler, that calls this application and writes the received values to the database 
+  * Create a new python file called “services.py” (*DjangoFPGA/BoardInteraction/services.py*)
+  * Add the following code to it:
     ````python
     '''
     Django FPGA Interaction demo application  - "sevices.py"
@@ -651,7 +650,7 @@ To implement that are two extension to the project requiered required:
 
     from BoardInteraction.models import ADCSensorReading, ADCchannel 
 
-    # For accessing the the Project settings
+    # For accessing the Project settings
     from django.conf import settings
 
     #
@@ -680,12 +679,12 @@ To implement that are two extension to the project requiered required:
         return True
         
     ````
-2. A application to read a ADC Channel of the Soft-IP ADC
- * *service.py* will call following python script to read the data
+2. An application to read an ADC Channel of the Soft-IP ADC interface
+ * *service.py* will call the following python script to read the ADC
    ````text
    Django2FPGAdemo/DjangoFPGA/BoardInteraction/adcReadChannel.py 
    ````
- * Create this file "adcReadChannel.py" on this location and add following to it
+ * Create this file "adcReadChannel.py" on this location and add the following lines to it
   ````python
   #!/usr/bin/env python
   # coding: utf-8
@@ -725,7 +724,7 @@ To implement that are two extension to the project requiered required:
 
   if __name__ == '__main__':
 
-      # Read selcted ADC Channel as input argument [1]
+      # Read selected ADC Channel as input argument [1]
       # python3 adcReadChannl <CH> 
       ch = 0
       ch_selet = str(sys.argv[1])
@@ -743,8 +742,9 @@ To implement that are two extension to the project requiered required:
       de = devmem.DevMem(HPS_LW_ADRS_OFFSET, ADC_ADDRES_OFFSET+0x8, "/dev/mem")
 
 
-      # Set meassure number for ADC convert
+      # Set FIFO size for ADC value averaging
       de.write(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,[FIFO_SIZE])
+      
       # Enable the convention with the selected Channel
       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x01])
@@ -773,9 +773,9 @@ To implement that are two extension to the project requiered required:
     
   ````
   # Configuring the plotting of an ADC Channel
-  This Django application uses for all ADC Channel a new database item inside the database “ADCchannel“. That means that we need   to collect ADC data to add a new ADCchannel item with the select channel. 
-This is only possible as Admin with the admin interface.  
-
+  This Django application needs a new database entry for all ADC Channels to read.
+  This will be stored inside the database “ADCchannel“. This is only possible by hand as an Admin with the admin interface. 
+ 
  * Start the Django Server
    ````bash 
    python3 manage.py runserver 0:8181
@@ -784,12 +784,12 @@ This is only possible as Admin with the admin interface.
    ````txt
    http://<iPv4-Address of the Board>:8181/admin 
    ```` 
-* On the Admin page select in the menu "Ad cchannels" the **+**-Icon
+* On the Admin page select  **+**-Icon in the menu "Ad cchannels" 
 * Inside the opend view press the "**ADD AD CCHANNEL**" Button
 
    ![Alt text](pic/pic06.jpg?raw=true "Django Adim interface - add Channel 1")
    
-* Then insiert following to the web form to add a new Sensor to the ADC Channel
+* Then insert the following to the web form to add a new Sensor to the ADC Channel
  * **Name**:   The name of the Sensor
  * **Slug**:   A unique ID for the Sensor 
  * **Reading**: The databebase with all sensor values
@@ -798,24 +798,24 @@ This is only possible as Admin with the admin interface.
  
  ![Alt text](pic/pic07.jpg?raw=true "Django Adim interface - add Channel 2")
  
- * Pres save
- * **Note:** It is nessary to at list a sensor value to the "readings"
+ * Press save
+ * **Note:** It is necessary to add one sensor value to the "readings" at least
    
 
  # Reading and plotting the data time triggered
  
-* Open the Application with following URL a web browser:
+* Open the Application with the following URL on a web browser:
    ````txt
    http://<iPv4-Address of the Board>:8181/ 
    ```` 
-At this point is only one ADC Value inside the plot. To manully read the ADC channel it is posible to open
-following URL with a web brauser:
+At this point only one ADC Value is inside the plot. To manually read the ADC channel it is possible to open
+the following URL with a web browser:
    ````txt
    http://<iPv4-Address of the Board>:8181/ADCtriger 
    ```` 
-Then relaod the application page. The new collected value is now plotted too. 
+Then reload the application page. The new collected value is plotted now too. 
 
-To automatic read the ADC Channel after a dissent time are to approaches here shown
+To automatically read the ADC Channel in a time interval are two approaches shown here
 1.	**Usage of a shell script**
   * For example, run the following Linux shell script to read the ADC every 100 milliseconds for 500 times
     ````console 
@@ -839,11 +839,11 @@ To automatic read the ADC Channel after a dissent time are to approaches here sh
    ```bash
    sudo nano /etc/crontab
    ````
-* Insiert following line to it
+* Insert the following line to it
   ````console
    * * * * * root curl -s http:/127.0.0.1:8181/ADCtrigger
   ````
-  * This will read the Sensor every minitute
-  * **Note:** To execute that is a restart of the Linux requiered  
+  * The Sensor will read this every minute
+  * **Note:** To execute this change a restart of Linux is required  
   
-* Refresh the management interface to see the plotting off the ADC data
+* Refresh the management interface to recognize the time synced plotting of the ADC data
