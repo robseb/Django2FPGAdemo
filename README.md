@@ -851,3 +851,16 @@ To automatically read the ADC Channel in a time interval are two approaches show
      * **Note:** To execute this change a restart of Linux is required  
   
 * Refresh the management interface to recognize the time synced plotting of the ADC data
+
+<br>
+
+# Author
+* **Robin Sebastian**
+
+*rsYocto* a project, that I have fully developed on my own. It is a academic project.
+Today I'm a Master Student of electronic engineering with the major embedded systems. 
+I ‘m looking for an interesting job offer to share and deepen my shown skills starting summer 2020.
+
+
+[![Gitter](https://badges.gitter.im/rsyocto/community.svg)](https://gitter.im/rsyocto/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Email me!](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:mail@robseb.de)
