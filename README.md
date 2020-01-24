@@ -20,11 +20,15 @@ The advantage of the usage SQLite and HTTP with Linux is that these are standard
 
 ### Reading a Sensor Value with the Django web framework - Sequence Diagram
 
-The following sequence Diagram show all involved comments and the data flow by reading an ADC Value to a *SQLite* Database. If a user opens the web page, Django plots the complete data into the web interface.
+The following sequence Diagram show all involved comments and the data flow by reading an ADC Value to a *SQLite* Database. If a user opens the web page, Django plots the complete data into the web interface. 
 ![Alt text](pic/SequenceDiagram.jpg?raw=true "Sequence Diagramm of the Sensor Reading")
 
-A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “read Sensor” application. This is a python script, which reads the Soft IP ADC Interface and returns ADC convention. Then adds Django the value with a time stamp to the *SQLite* database. 
-To repeat and time sync the readout of the ADC can be a Shell script or the tool “crontab” be considered. It is also possible irregular event trigger the readout of the sensor.
+A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then adds Django the value with a time stamp to the *SQLite* database. 
+
+To repeat and time sync the readout of the ADC can be a Shell script or the tool “crontab” considered. It is also possible irregular event trigger the readout of the sensor.
+
+In case a user opens the web application Django loads the complete data of the ADC from the database and plots them graphically into the webpage.  
+This is one example approaches for the final application. The interface for managing FPGA Configurations works in general similarly. 
 
 <br>
 
