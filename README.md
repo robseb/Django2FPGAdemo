@@ -2,11 +2,11 @@
 
  ![Alt text](pic/pic00.jpg?raw=true "Concept")
 
-### Demonstration how build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
+### Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
 
 **This step by step guide shows how to log Sensor Data from a Soft-IP ADC interface within a SQLite-Database and how to plot this data on a web interface. In addition, it is demonstrated how to manage and change the FPGA Configuration with just a web browser.**
 
-Complex web interfaces for controlling and monitoring of embedded systems are standard today. For low quantity FPGA applications, the development of this web application is often time-consuming. To accelerate this process, it is important to use powerful web development frameworks with simple to use IDEs such as Django. A huge community on desktop site uses that and if the same version of Django runs on the embedded Linux, it is possible to benefit from their knowledge. Django has a comprehensive documentation with many demos. However, these demos are for typical Desktop- and Cloud- applications and not for embedded applications. The imported part of embedded management web applications are the interaction between the web interface and Sensor- or FPGA-data.
+Complex web interfaces for controlling and monitoring of embedded systems are standard today. For low quantity FPGA applications, the development of this web applications is often time-consuming. To accelerate this process, it is important to use powerful web development frameworks with simple to use IDEs such as Django. A huge community on desktop site uses that and if the same version of Django runs on the embedded Linux, it is possible to benefit from their knowledge. Django has a comprehensive documentation with many demos. However, these demos are for typical Desktop- and Cloud- applications and not for embedded applications. The imported part of embedded management web applications are the interaction between the web interface and Sensor- or FPGA-data.
 
 To demonstrate that, is the ADC converter (*Analog Devices LTC2308*) of a *Terasic DE10-Nano*- or *DE10-Standard* Board (Intel Cyclon V SoC-FPGA) with an Soft-IP interface connected with the *Lightweight HPS to FPGA Bridge* to the Hard Processor System (HPS). 
 On the ARM Cortex-A9 of the HPS run my embedded Linux, called [*rsYocto*](https://github.com/robseb/rsyocto), customized for Intel SoC-FPGAs. 
@@ -14,13 +14,24 @@ On the ARM Cortex-A9 of the HPS run my embedded Linux, called [*rsYocto*](https:
 On *rsYocto* is the **Django Framework  (Version 3.01)** with all necessary components, like the **Apache-Webserver** and the **SQLite database**, are pre-installed. 
 
 **This approach is the monitoring and management of embedded FPGA systems with a web interface**. This cannot be consider for low latency real-time applications. 
-The advantage of the usage SQLite and HTTP with Linux is that these are standard in the desktop world. For these are for example API for connecting with cloud services available. 
+The advantage of the usage of SQLite and HTTP with Linux is that these are standard in the desktop world. Is allows for example to connect the data with a cloud service by adding a few extansions.
 
 <br>
 
+### Reading a Sensor Value with the Django web framework - Sequence Diagram
+
+The following sequence Diagram show all involved comments and the data flow by reading an ADC Value to a *SQLite* Database. If a user opens the web page, Django plots the complete data into the web interface. 
 ![Alt text](pic/SequenceDiagram.jpg?raw=true "Sequence Diagramm of the Sensor Reading")
 
+A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then adds Django the value with a time stamp to the *SQLite* database. 
+
+To repeat and time sync the readout of the ADC can be a Shell script or the tool “crontab” considered. It is also possible irregular event trigger the readout of the sensor.
+
+In case a user opens the web application Django loads the complete data of the ADC from the database and plots them graphically into the webpage.  
+This is one example approaches for the final application. The interface for managing FPGA Configurations works in general similarly. 
+
 <br>
+
 
 ### Screenshot of the Web interface
 
