@@ -257,7 +257,7 @@ As a second feature, we will build a management interface for changing the FPGA 
     Password (again): *********
     Superuser created successfully.
     ````
- * Allow the Admin to access the accelerometer database models by adding the following code lines to the Admin-file (*DjangoFPGA/BoardInteraction/admin.py*)
+ * Allow the Admin to access all database models by adding the following code lines to the Admin-file (*DjangoFPGA/BoardInteraction/admin.py*)
    ````python
    '''
    Django FPGA Interaction demo application  - "admin.py"
