@@ -810,9 +810,21 @@ Then relaod the application page. The new collected value is now plotted too.
 
 To automatic read the ADC Channel after a dissent time are to approaches here shown
 1.	**Usage of a shell script**
-  * Run for example following Linux Shell script to read the ADC every 200 Milliseconds  
+  * For example, run the following Linux shell script to read the ADC every 100 milliseconds for 500 times
     ````console 
-    dd
+    #!/bin/sh
+    # Run script
+    echo "*********************************"
+    echo "read ADC Channel every 100ms "
+
+    for nvar in {1..500}
+    do
+      curl -s http://127.0.0.1:8181/ADCtrigger
+
+      sleep  0.1
+    done 
+
+    echo "*********************************"
     ````
 2.	**Usage of the Linux task automation tool `crontab` **
  * This is on *rsYocto* pre-installed
