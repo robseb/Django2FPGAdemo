@@ -30,6 +30,7 @@ The advantage of the usage of SQLite and HTTP with Linux is that these are stand
   * **Configuration of the FPGA fabric**
   * **Controlling a FPGA LED**
 
+___
 
 ### Reading a Sensor Value with the Django web framework - Sequence Diagram
 
@@ -49,14 +50,14 @@ ___
 
 ### Table of Content
 
-1. [**Project Preparations**](https://github.com/robseb/Django2FPGAdemo#preparations)
-2. [**Installing the finshed Web interface**](https://github.com/robseb/Django2FPGAdemo#testing-the-finished-version)
-3. [**Creating a new Django Project on the SoC-FPGA**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-project)
-4. [**Creating a new Django App to interact with the FPGA fabric**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-to-interact-with-the-fpga-fabric)
-5. [**Testing the Web Appilcation**](https://github.com/robseb/Django2FPGAdemo#testing-the-appilcation)
-6. [**Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase**]()
-7. [**Configuring the plotting of an ADC Channel**](https://github.com/robseb/Django2FPGAdemo#configure-the-plotting-of-a-adc-channel)
-8. [**Reading and plotting the data time triggered**](https://github.com/robseb/Django2FPGAdemo#reading-the-adc-channel-and-polting-the-data-time-triggered)
+1. [**Project Preparations**](https://github.com/robseb/Django2FPGAdemo#project-preparations)
+2. [**Installing the finshed Web interface**](https://github.com/robseb/Django2FPGAdemo#installing-the-finshed-web-interface)
+3. [**Creating a new Django Project on the SoC-FPGA**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-project-on-the-soc-fpga)
+4. [**Creating a new Django App to interact with the FPGA fabric**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-app-to-interact-with-the-fpga-fabric)
+5. [**Testing the Web Appilcation**](https://github.com/robseb/Django2FPGAdemo#testing-the-web-application)
+6. [**Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase**](https://github.com/robseb/Django2FPGAdemo#reading-of-a-soft-ip-adc-interface-and-writing-the-data-into-a-sqlite-datbase)
+7. [**Configuring the plotting of an ADC Channel**](https://github.com/robseb/Django2FPGAdemo#configuring-the-plotting-of-an-adc-channel)
+8. [**Reading and plotting the data time triggered**](https://github.com/robseb/Django2FPGAdemo#reading-and-plotting-the-data-time-triggered)
 ___
 <br>
 
@@ -308,7 +309,7 @@ As a second feature, we will build a management interface for changing the FPGA 
  ## Presenting the Sensor Data and FPGA configuration on a web page
   * To view this data in a graphic the library [plotly](https://plot.ly/python/) is used
     * That is an easy way to implement such kind of UI-elemets to a web page. 
-    * In the same way it is possible to add any kind of diagramms to this web App (please follow the official documentation)
+    * In the same way it is possible to add any kind of diagramms to this web App (please follow the [official documentation](https://plot.ly/python/)
   * To display something on a web page it is necessary to add some lines of code to the "*views.py*"-file (*DjangoFPGA/AccSensor/views.py*):
     ````python
     '''
@@ -632,7 +633,7 @@ As a second feature, we will build a management interface for changing the FPGA 
    ![Alt text](pic/pic08.jpg?raw=true "Django App ")
 
  * Test the Webinterface:
-   * Change the FPGA configuration (the required type is described [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md))
+   * Change the FPGA configuration (the required type is described [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/6_newFPGAconf.md))
  * Turn the FPGA LED ON or OFF
  
 At this point the ADC plot is empty, because no application has written to the database. This will be solved in the next steps.
@@ -837,6 +838,7 @@ To automatically read the ADC Channel in a time interval are two approaches show
       ````
 2.	**Usage of the Linux task automation tool `crontab`**
    * This is on *rsYocto* pre-installed
+   * A good documentation is available[here](https://www.computerhope.com/unix/ucrontab.htm)
    *  Open the "crontab" configuration file
       ```bash
       sudo nano /etc/crontab
