@@ -1,8 +1,8 @@
-# Django2FPGAdemo
+# Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
+
 
  ![Alt text](pic/pic00.jpg?raw=true "Concept")
 
-### Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
 
 **This step by step guide shows how to log Sensor Data from a Soft-IP ADC interface within a SQLite-Database and how to plot this data on a web interface. In addition, it is demonstrated how to manage and change the FPGA Configuration with just a web browser.**
 
@@ -65,19 +65,22 @@ ___
 # Testing the finshed version
 
 For installing and testing of the finish project do following steps:
-* Clone this repository by executing following Linux Terminal command on *rsYocto*
-  ````bash
-  git clone https://github.com/robseb/Django2FPGAdemo.git
-  ````
-* Navigate inside the project folder
-  ````bash
-  cd DjangoFPGA
-  ````
+ * Clone this repository by executing following Linux Terminal command on *rsYocto*
+   ````bash
+   git clone https://github.com/robseb/Django2FPGAdemo.git
+   ````
+ * Navigate inside the project folder
+   ````bash
+   cd DjangoFPGA
+   ````
+ * Import the Python pip-package "plotly" that is used for the plotting of the data:
+   ````bash
+   pip install plotly
+   ````
  * Use the next command to start the web server (here on Port 8181)
- ````bash
- python3 manage.py runserver 0:8181
- ````
- ddsddsdddssdf
+  ````bash
+  python3 manage.py runserver 0:8181
+  ````
 
 ___
 <h3><u> Or build it by your own with this step by step guide: </u> </h3>
@@ -629,7 +632,7 @@ At this point is the ADC plot empty, because one write the value to the database
 ### Reading the ADC and writing the data into a datbase
 As in the sequence diagram is the readout of the ADC triggered be calling the URL *http://127.0.1:8181/ADCtriger*. Then starts Django application to collect the ADC sensor data and writes them to a database. 
 
-To implement that are two major extension required: 
+To implement that are two extension to the project requiered required: 
  1.	A function to start an application to read the data and write them to the database 
   * Create a new python file called “services.py” s (*DjangoFPGA/BoardInteraction/services.py*)
   * Add following to it:
@@ -762,4 +765,66 @@ To implement that are two major extension required:
       print(str(volage))
     
   ````
+  ### Configure the plotting of a ADC Channel
+  This Django application uses for all ADC Channel a new database item inside the database “ADCchannel“. That means that we need   to collect ADC data to add a new ADCchannel item with the select channel. 
+This is only possible as Admin with the admin interface.  
+
+ * Start the Django Server
+   ````bash 
+   python3 manage.py runserver 0:8181
+   ```` 
+  * Open the following URL with a web browser:
+   ````txt
+   http://<iPv4-Address of the Board>:8181/admin 
+   ```` 
+* On the Admin page select in the menu "Ad cchannels" the **+**-Icon
+* Inside the opend view press the "**ADD AD CCHANNEL**" Button
+
+   ![Alt text](pic/pic06.jpg?raw=true "Django Adim interface - add Channel 1")
+   
+* Then insiert following to the web form to add a new Sensor to the ADC Channel
+ * **Name**:   The name of the Sensor
+ * **Slug**:   A unique ID for the Sensor 
+ * **Reading**: The databebase with all sensor values
+ * **CH**:      The choosed ADC Channel
+ 
+ 
+ ![Alt text](pic/pic07.jpg?raw=true "Django Adim interface - add Channel 2")
+ 
+ * Pres save
+ * **Note:** It is nessary to at list a sensor value to the "readings"
+   
+
+ ### Reading the ADC Channel and polting the data time triggered
+ 
+* Open the Application with following URL a web browser:
+   ````txt
+   http://<iPv4-Address of the Board>:8181/ 
+   ```` 
+At this point is only one ADC Value inside the plot. To manully read the ADC channel it is posible to open
+following URL with a web brauser:
+   ````txt
+   http://<iPv4-Address of the Board>:8181/ADCtriger 
+   ```` 
+Then relaod the application page. The new collected value is now plotted too. 
+
+To automatic read the ADC Channel after a dissent time are to approaches here shown
+1.	**Usage of a shell script**
+  * Run for example following Linux Shell script to read the ADC every 200 Milliseconds  
+    ````console 
+    dd
+    ````
+2.	**Usage of the Linux task automation tool `crontab` **
+ * This is on *rsYocto* pre-installed
+*  Open the "crontab" configuration file
+   ```bash
+   sudo nano /etc/crontab
+   ````
+* Insiert following line to it
+  ````console
+   * * * * * root curl -s http:/127.0.0.1:8181/ADCtrigger
+  ````
+  * This will read the Sensor every minitute
+  * **Note:** To execute that is a restart of the Linux requiered  
   
+* Refresh the management interface to see the plotting off the ADC data
