@@ -54,10 +54,11 @@ This is one part of the final application. The interface for managing FPGA Confi
 3. [**Creating a new Django Project on the SoC-FPGA**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-project)
 4. [**Creating a new Django App to interact with the FPGA fabric**](https://github.com/robseb/Django2FPGAdemo#creating-a-new-django-to-interact-with-the-fpga-fabric)
 5. [**Testing the Web Appilcation**](https://github.com/robseb/Django2FPGAdemo#testing-the-appilcation)
-6. [**Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase**](Reading the ADC and writing the data into a datbase)
+6. [**Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase**]()
 7. [**Configuring the plotting of an ADC Channel**](https://github.com/robseb/Django2FPGAdemo#configure-the-plotting-of-a-adc-channel)
-8. [**Reading the and plotting the data time triggered**](https://github.com/robseb/Django2FPGAdemo#reading-the-adc-channel-and-polting-the-data-time-triggered)
+8. [**Reading and plotting the data time triggered**](https://github.com/robseb/Django2FPGAdemo#reading-the-adc-channel-and-polting-the-data-time-triggered)
 ___
+<br>
 
 # Preparations 
 
@@ -66,7 +67,7 @@ ___
 * `Django 3.0.2` is already pre-installed on *rsYocto*
 
 ___
-# Testing the finished version
+# Installing the finshed Web interface
 
 For installing and testing the final project do the following steps:
  * Clone this repository by executing the following Linux Terminal command on *rsYocto*
@@ -90,7 +91,7 @@ ___
 <h3><u> Or build it by your own with this step by step guide: </u> </h3>
 <br>
 
-# Creating a new Django Project
+# Creating a new Django Project on the SoC-FPGA
 
 * Use the Linux Terminal, which is reachable inside *Visual Studio Code Insider* to create a new Django project with the name "DjangoFPGA" by executing the following command:
   ````bash
@@ -104,7 +105,7 @@ ___
   cd DjangoFPGA
   ````
  
-# Testing the empty Django Project by accessing it with a web browser
+## Testing the empty Django Project by accessing it with a web browser
 
 * By default the Django web server is only reachable internally by the embedded Linux
 * To access Django applications within your network do the following steps:
@@ -172,7 +173,7 @@ ___
 * All **HTTP**-attaches are listed on the terminal as well
 
 
-# Creating a new Django to interact with the FPGA fabric
+# Creating a new Django App to interact with the FPGA fabric
 Every Django project requires at least one application (App). We will build an App to readout the Soft-IP ADC Interface (*Analog Devices LTC2308*) of a Terasic DE10-Standard- or Terasic DE10-Nano-Board and present the data in the web browser.
 As a second feature, we will build a management interface for changing the FPGA configuration. 
 
@@ -205,7 +206,7 @@ As a second feature, we will build a management interface for changing the FPGA 
    python3 manage.py migrate 
    ````
 
-### Creating a model to store the Sensor data and FPGA configuration files into a SQLite database
+## Creating a model to store the Sensor data and FPGA configuration files into a SQLite database
 * Add the following python code to the model file (*DjangoFPGA/BoardInteraction/models.py*)
   ````python
   '''
@@ -244,7 +245,7 @@ As a second feature, we will build a management interface for changing the FPGA 
        timestamp = models.DateTimeField(default=datetime.now, db_index=True)    # Time stamp
   ````
  
- ### Creating an Administrator page to allow an access to the database
+ ## Creating an Administrator page to allow an access to the database
  * Create an user who can do the login to the admin site. Run the following command:
     ````bash
     python3 manage.py createsuperuser
@@ -275,7 +276,7 @@ As a second feature, we will build a management interface for changing the FPGA 
    admin.site.site_title = 'rsYocto'                                          # HTML Headline
    ````
    
- ### Testing the Administrator page
+ ## Testing the Administrator page
  * Save all open files
  * To generate a mySQLite database with these settings execude the following Linux Shell commands (*DjangoFPGA/*):
    ````bash
@@ -303,7 +304,8 @@ As a second feature, we will build a management interface for changing the FPGA 
  * At this point it is possible to add the sensor data manuelly 
  (Hier ggf. manuel ein wert einfuegen)
  
-  ### Presenting the Sensor Data and FPGA configuration on a web page
+ 
+ ## Presenting the Sensor Data and FPGA configuration on a web page
   * To view this data in a graphic the library [plotly](https://plot.ly/python/) is used
     * That is an easy way to implement such kind of UI-elemets to a web page. 
     * In the same way it is possible to add any kind of diagramms to this web App (please follow the official documentation)
@@ -570,7 +572,7 @@ As a second feature, we will build a management interface for changing the FPGA 
            help_text='Click Upload to save the file and configure the FPGA fabric'
        )
    ````
-### Routing the URLs of the Application
+## Routing the URLs of the Application
 * By default nothing will be routed to the front page of this application (http://<iPv4-Address of the Board>:8181/)
 * To link the front page to the "AccSensor"-App with the previosly created UI at the following lines of code in the global url configurations (*DjangoFPGA/DjangoFPGA/urls.py*):
   ````python
@@ -605,7 +607,7 @@ As a second feature, we will build a management interface for changing the FPGA 
   ````
   * Save all open files
 
- ### Testing the Appilcation 
+ ## Testing the Web Appilcation 
  * Now all configurations of the user elements of these applications are done and it is time to test this state
  * Save all open files
  * Import the Python pip-package "plotly" that is used for the plotting of the data:
@@ -634,7 +636,7 @@ As a second feature, we will build a management interface for changing the FPGA 
  
 At this point is the ADC plot empty, because one write the value to the database. This will be solved in the next step.
 
-### Reading the ADC and writing the data into a datbase
+# Reading of a Soft-IP ADC interface and writing the data into a SQLite datbase
 As in the sequence diagram is the readout of the ADC triggered be calling the URL *http://127.0.1:8181/ADCtriger*. Then starts Django application to collect the ADC sensor data and writes them to a database. 
 
 To implement that are two extension to the project requiered required: 
@@ -770,7 +772,7 @@ To implement that are two extension to the project requiered required:
       print(str(volage))
     
   ````
-  ### Configure the plotting of a ADC Channel
+  # Configuring the plotting of an ADC Channel
   This Django application uses for all ADC Channel a new database item inside the database “ADCchannel“. That means that we need   to collect ADC data to add a new ADCchannel item with the select channel. 
 This is only possible as Admin with the admin interface.  
 
@@ -800,7 +802,7 @@ This is only possible as Admin with the admin interface.
  * **Note:** It is nessary to at list a sensor value to the "readings"
    
 
- ### Reading the ADC Channel and polting the data time triggered
+ # Reading and plotting the data time triggered
  
 * Open the Application with following URL a web browser:
    ````txt
