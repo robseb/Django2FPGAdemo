@@ -826,7 +826,7 @@ To automatic read the ADC Channel after a dissent time are to approaches here sh
 
     echo "*********************************"
     ````
-2.	**Usage of the Linux task automation tool `crontab` **
+2.	**Usage of the Linux task automation tool `crontab`**
  * This is on *rsYocto* pre-installed
 *  Open the "crontab" configuration file
    ```bash
