@@ -45,7 +45,7 @@ This is one part of the final application. The interface for managing FPGA Confi
 
 <br>
 
-
+___
 
 ### Table of Content
 
@@ -60,13 +60,13 @@ This is one part of the final application. The interface for managing FPGA Confi
 ___
 <br>
 
-# Preparations 
+# Project Preparations 
 
 * Boot up [*rsYocto*](https://github.com/robseb/rsyocto) on your Intel SoC-FPGA Board by following the [getting started Guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
 * Setup Visual Studio Code Insider with [this instruction guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
 * `Django 3.0.2` is already pre-installed on *rsYocto*
 
-___
+
 # Installing the finshed Web interface
 
 For installing and testing the final project do the following steps:
@@ -83,9 +83,9 @@ For installing and testing the final project do the following steps:
    pip install plotly
    ````
  * Use the next command to start the web server (here on Port 8181)
-  ````bash
-  python3 manage.py runserver 0:8181
-  ````
+   ````bash
+   python3 manage.py runserver 0:8181
+   ````
 
 ___
 <h3><u> Or build it by your own with this step by step guide: </u> </h3>
@@ -101,24 +101,24 @@ ___
  
  * **Note:** Use in the drop-down menu (blue arrow) the point "*sh*" to access the Linux Terminal. In case the point is not there, press the “**+**”-icon to add it. 
  * Navigate with the Linux Terminal inside Visual Studio code to this project
-  ````bash
-  cd DjangoFPGA
-  ````
+   ````bash
+   cd DjangoFPGA
+   ````
  
 ## Testing the empty Django Project by accessing it with a web browser
 
 * By default the Django web server is only reachable internally by the embedded Linux
 * To access Django applications within your network do the following steps:
   1. Open the Django project settings file (*settings.py*) with *Visual Studio Code* (as shown above) and allow everybody to connect with the following lines:
-    ````python
-    ALLOWED_HOSTS = [
-     '*'
-   ]
-   ````
+      ````python
+      ALLOWED_HOSTS = [
+       '*'
+     ]
+     ````
   2. After some change of the settings file a **migration** of the project is necessary:
-    ````bash
-    python3 manage.py migrate 
-    ````
+      ````bash
+      python3 manage.py migrate 
+      ````
     * The output of this command should look like this:
       ````bash
       root@cyclone5:~/DjangoFPGA# python3 manage.py migrate
@@ -162,9 +162,9 @@ ___
     * **Note:** The default port 8080 is used by the *Apache web server*
   
 * Go with a web browser on a device inside this network (computer, tablet, smart-phone) to the URL:
-    ````txt
-     http://<iPv4-Address of the Board>:8181/ 
-    ````
+     ````txt
+      http://<iPv4-Address of the Board>:8181/ 
+     ````
 * If you see a *rocket lunch* your Django project works properly 
 
   ![Alt text](pic/pic02.jpg?raw=true "Django Start screen")
@@ -610,9 +610,9 @@ As a second feature, we will build a management interface for changing the FPGA 
  ## Testing the Web Application 
  * Now all configurations of the user elements are done and it is time to test this state
  * Import the Python pip-package "plotly" using for the plotting of the data:
-  ````bash
-  pip install plotly
-  ````
+   ````bash
+   pip install plotly
+   ````
  * Execude the following Linux Shell commands again (*DjangoFPGA/*):
    ````bash
    python3 manage.py makemigrations
@@ -628,7 +628,9 @@ As a second feature, we will build a management interface for changing the FPGA 
    http://<iPv4-Address of the Board>:8181/admin 
    ```` 
  * The front page should now look like this: 
-   (Pic07)
+   
+   ![Alt text](pic/pic08.jpg?raw=true "Django App ")
+
  * Test the Webinterface:
    * Change the FPGA configuration (the required type is described [here](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md))
  * Turn the FPGA LED ON or OFF
@@ -685,93 +687,93 @@ To implement that two extensions of the project are required:
    Django2FPGAdemo/DjangoFPGA/BoardInteraction/adcReadChannel.py 
    ````
  * Create this file "adcReadChannel.py" on this location and add the following lines to it
-  ````python
-  #!/usr/bin/env python
-  # coding: utf-8
+   ````python
+   #!/usr/bin/env python
+   # coding: utf-8
 
-  '''
-  @disc:  Single Shoot ADC Channel readout (Analog Devices LTC2308)
-          Fast way over the virtual memory
+   '''
+   @disc:  Single Shoot ADC Channel readout (Analog Devices LTC2308)
+           Fast way over the virtual memory
 
-  @date:   21.01.2020
-  @device: Intel Cyclone V 
-  @author: Robin Sebastian
-           (https://github.com/robseb)
-  '''
-  import os
-  import time
-  import math
-  import sys
-  # 
-  # This demo uses the python class "devmen" (https://github.com/kylemanna/pydevmem)
-  # be sure that this file is on the same directory 
-  #
-  import devmem
+   @date:   21.01.2020
+   @device: Intel Cyclone V 
+   @author: Robin Sebastian
+            (https://github.com/robseb)
+   '''
+   import os
+   import time
+   import math
+   import sys
+   # 
+   # This demo uses the python class "devmen" (https://github.com/kylemanna/pydevmem)
+   # be sure that this file is on the same directory 
+   #
+   import devmem
 
-  # the Lightweight HPS-to-FPGA Bus base address offset
-  HPS_LW_ADRS_OFFSET = 0xFF200000 
+   # the Lightweight HPS-to-FPGA Bus base address offset
+   HPS_LW_ADRS_OFFSET = 0xFF200000 
 
-  # LTC2308 Address offset
-  ADC_ADDRES_OFFSET = 0x40
+   # LTC2308 Address offset
+   ADC_ADDRES_OFFSET = 0x40
 
-  # Register set of the LTC2308
-  ADC_CMD_REG_OFFSET  = 0x0
-  ADC_DATA_REG_OFFSET = 0x4
-
-
-  ### FIFO Convention Data Size for average calculation
-  FIFO_SIZE = 255 # MAX=1024 
-
-  if __name__ == '__main__':
-
-      # Read selected ADC Channel as input argument [1]
-      # python3 adcReadChannl <CH> 
-      ch = 0
-      ch_selet = str(sys.argv[1])
-
-      try: 
-          ch = int(ch_selet)
-      except ValueError:
-          ch = 0
-
-      if(not(ch >=0 and ch < 6)):
-          ch = 0
-
-      # open the memory Access to the Lightweight HPS-to-FPGA bridge
-      #                  (Base address, byte length to acceses, interface)
-      de = devmem.DevMem(HPS_LW_ADRS_OFFSET, ADC_ADDRES_OFFSET+0x8, "/dev/mem")
+   # Register set of the LTC2308
+   ADC_CMD_REG_OFFSET  = 0x0
+   ADC_DATA_REG_OFFSET = 0x4
 
 
-      # Set FIFO size for ADC value averaging
-      de.write(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,[FIFO_SIZE])
-      
-      # Enable the convention with the selected Channel
-      de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
-      de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x01])
-      de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
+   ### FIFO Convention Data Size for average calculation
+   FIFO_SIZE = 255 # MAX=1024 
 
-      timeout = 300 #ms
-      # Wait until convention is done or a timeout occurred
-      while (not(timeout == 0)):
-          if(de.read(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET,1)[0] & (1<<0)): 
-              break
+   if __name__ == '__main__':
 
-          timeout = timeout -1
-          time.sleep(.001) # delay 1ms 
+       # Read selected ADC Channel as input argument [1]
+       # python3 adcReadChannl <CH> 
+       ch = 0
+       ch_selet = str(sys.argv[1])
 
-      # calculate the average of the FIFO
-      rawValue = 0
-      for i in range(FIFO_SIZE): 
-          rawValue = rawValue+ (de.read(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,1))[0]
+       try: 
+           ch = int(ch_selet)
+       except ValueError:
+           ch = 0
 
-      value = rawValue / FIFO_SIZE
+       if(not(ch >=0 and ch < 6)):
+           ch = 0
 
-      # Convert ADC Value to Volage
-      volage = round(value/1000,2)
-      # print the Value
-      print(str(volage))
-    
-  ````
+       # open the memory Access to the Lightweight HPS-to-FPGA bridge
+       #                  (Base address, byte length to acceses, interface)
+       de = devmem.DevMem(HPS_LW_ADRS_OFFSET, ADC_ADDRES_OFFSET+0x8, "/dev/mem")
+
+
+       # Set FIFO size for ADC value averaging
+       de.write(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,[FIFO_SIZE])
+
+       # Enable the convention with the selected Channel
+       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
+       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x01])
+       de.write(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET, [(ch <<1) | 0x00])
+
+       timeout = 300 #ms
+       # Wait until convention is done or a timeout occurred
+       while (not(timeout == 0)):
+           if(de.read(ADC_ADDRES_OFFSET+ADC_CMD_REG_OFFSET,1)[0] & (1<<0)): 
+               break
+
+           timeout = timeout -1
+           time.sleep(.001) # delay 1ms 
+
+       # calculate the average of the FIFO
+       rawValue = 0
+       for i in range(FIFO_SIZE): 
+           rawValue = rawValue+ (de.read(ADC_ADDRES_OFFSET+ADC_DATA_REG_OFFSET,1))[0]
+
+       value = rawValue / FIFO_SIZE
+
+       # Convert ADC Value to Volage
+       volage = round(value/1000,2)
+       # print the Value
+       print(str(volage))
+
+   ````
   # Configuring the plotting of an ADC Channel
   This Django application needs a new database entry for all ADC Channels to read.
   This will be stored inside the database “ADCchannel“. This is only possible by hand as an Admin with the admin interface. 
@@ -781,9 +783,9 @@ To implement that two extensions of the project are required:
    python3 manage.py runserver 0:8181
    ```` 
   * Open the following URL with a web browser:
-   ````txt
-   http://<iPv4-Address of the Board>:8181/admin 
-   ```` 
+    ````txt
+    http://<iPv4-Address of the Board>:8181/admin 
+    ```` 
 * On the Admin page select  **+**-Icon in the menu "Ad cchannels" 
 * Inside the opend view press the "**ADD AD CCHANNEL**" Button
 
@@ -817,33 +819,33 @@ Then reload the application page. The new collected value is plotted now too.
 
 To automatically read the ADC Channel in a time interval are two approaches shown here
 1.	**Usage of a shell script**
-  * For example, run the following Linux shell script to read the ADC every 100 milliseconds for 500 times
-    ````console 
-    #!/bin/sh
-    # Run script
-    echo "*********************************"
-    echo "read ADC Channel every 100ms "
+   * For example, run the following Linux shell script to read the ADC every 100 milliseconds for 500 times
+      ````console 
+      #!/bin/sh
+      # Run script
+      echo "*********************************"
+      echo "read ADC Channel every 100ms "
 
-    for nvar in {1..500}
-    do
-      curl -s http://127.0.0.1:8181/ADCtrigger
+      for nvar in {1..500}
+      do
+        curl -s http://127.0.0.1:8181/ADCtrigger
 
-      sleep  0.1
-    done 
+        sleep  0.1
+      done 
 
-    echo "*********************************"
-    ````
+      echo "*********************************"
+      ````
 2.	**Usage of the Linux task automation tool `crontab`**
- * This is on *rsYocto* pre-installed
-*  Open the "crontab" configuration file
-   ```bash
-   sudo nano /etc/crontab
-   ````
-* Insert the following line to it
-  ````console
-   * * * * * root curl -s http:/127.0.0.1:8181/ADCtrigger
-  ````
-  * The Sensor will read this every minute
-  * **Note:** To execute this change a restart of Linux is required  
+   * This is on *rsYocto* pre-installed
+   *  Open the "crontab" configuration file
+      ```bash
+      sudo nano /etc/crontab
+      ````
+   * Insert the following line to it
+     ````console
+      * * * * * root curl -s http:/127.0.0.1:8181/ADCtrigger
+     ````
+     * The Sensor will read this every minute
+     * **Note:** To execute this change a restart of Linux is required  
   
 * Refresh the management interface to recognize the time synced plotting of the ADC data
