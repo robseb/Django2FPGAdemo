@@ -1,20 +1,20 @@
-# Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA or other Sensors and actuators
+# Demonstration how to build with the Django Framework a Management Web interface to interact with the FPGA fabric and the FPGA configuration with the Django Framework
 
 
  ![Alt text](pic/pic00.jpg?raw=true "Concept")
 
 
-**This step by step guide shows how to log Sensor Data from a Soft-IP ADC interface within a SQLite-Database and how to plot this data on a web interface. In addition, it is demonstrated how to manage and change the FPGA Configuration with just a web browser.**
+**This step by step guide shows how to log Sensor Data from a Soft-IP ADC interface within a SQLite-Database and how to plot these data on a web interface. In addition, it is demonstrated how to manage and change the FPGA Configuration with just a web browser.**
 
-Complex web interfaces for controlling and monitoring of embedded systems are standard today. For low quantity FPGA applications, the development of this web applications is often time-consuming. To accelerate this process, it is important to use powerful web development frameworks with simple to use IDEs such as Django. A huge community on desktop site uses that and if the same version of Django runs on the embedded Linux, it is possible to benefit from their knowledge. Django has a comprehensive documentation with many demos. However, these demos are for typical Desktop- and Cloud- applications and not for embedded applications. The imported part of embedded management web applications are the interaction between the web interface and Sensor- or FPGA-data.
+Complex web interfaces for controlling and monitoring on embedded systems are standard today. Especially for low quantity FPGA applications, the development of these web applications is often time-consuming. To accelerate this process, it is important to use powerful web development frameworks with simple to use IDEs such as Django. A huge community on desktop site uses that and if the same version of Django runs on the embedded Linux, it is possible to benefit from their knowledge. Django has a comprehensive documentation with many demos. However, these demos are for typical Desktop- and Cloud- applications and not for embedded ones. The important part of embedded management web applications is the interaction between the web interface and Sensor- or FPGA-data.
 
-To demonstrate that, is the ADC converter (*Analog Devices LTC2308*) of a *Terasic DE10-Nano*- or *DE10-Standard* Board (Intel Cyclon V SoC-FPGA) with an Soft-IP interface connected with the *Lightweight HPS to FPGA Bridge* to the Hard Processor System (HPS). 
-On the ARM Cortex-A9 of the HPS run my embedded Linux, called [*rsYocto*](https://github.com/robseb/rsyocto), customized for Intel SoC-FPGAs. 
+To demonstrate this, the ADC converter (*Analog Devices LTC2308*) of a *Terasic DE10-Nano*- or *DE10-Standard* Board (Intel Cyclon V SoC-FPGA) with a Soft-IP interface is connected via the *Lightweight HPS to FPGA Bridge* to the Hard Processor System (HPS). 
+On the ARM Cortex-A9 of the HPS my embedded Linux, called [*rsYocto*](https://github.com/robseb/rsyocto), customized for Intel SoC-FPGA is running.
 
-On *rsYocto* is the **Django Framework  (Version 3.0.2)** with all necessary components, like the **Apache-Webserver** and the **SQLite database**, are pre-installed. 
+On *rsYocto* the **Django Framework  (Version 3.0.2)** with all necessary components, like the **Apache Webserver** and the **SQLite database**, is pre-installed. 
 
 **This approach is the monitoring and management of embedded FPGA systems with a web interface**. This cannot be consider for low latency real-time applications. 
-The advantage of the usage of SQLite and HTTP with Linux is that these are standard in the desktop world. Is allows for example to connect the data with a cloud service by adding a few extansions.
+The advantage of the usage of SQLite and HTTP with Linux is that these are standard in the desktop world. It allows for example to connect the data with a cloud service by adding a few extensions.
 
 <br>
 
@@ -33,15 +33,15 @@ The advantage of the usage of SQLite and HTTP with Linux is that these are stand
 
 ### Reading a Sensor Value with the Django web framework - Sequence Diagram
 
-The following sequence Diagram show all involved comments and the data flow by reading an ADC Value to a *SQLite* Database. If a user opens the web page, Django plots the complete data into the web interface. 
+The following sequence Diagram shows all involved actors and the data flow by reading an ADC Value to a *SQLite* Database. If an user opens the web page, Django plots the complete data into the web interface as shown below. 
 ![Alt text](pic/SequenceDiagram.jpg?raw=true "Sequence Diagramm of the Sensor Reading")
 
-A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then adds Django the value with a time stamp to the *SQLite* database. 
+A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then Django adds the value with a time stamp to the *SQLite* database. 
 
-To repeat and time sync the readout of the ADC can be a Shell script or the tool “crontab” considered. It is also possible irregular event trigger the readout of the sensor.
+To repeat and time sync the readout of the ADC can be a Shell script or the tool “crontab” considered.
 
-In case a user opens the web application Django loads the complete data of the ADC from the database and plots them graphically into the webpage.  
-This is one example approaches for the final application. The interface for managing FPGA Configurations works in general similarly. 
+In case an user is going to open the web application, Django loads the complete data of the ADC from the database and plots them graphically into the webpage.  
+This is one part of the final application. The interface for managing FPGA Configurations works similarly. 
 
 <br>
 
@@ -58,14 +58,14 @@ ___
 # Preparations 
 
 * Boot up [*rsYocto*](https://github.com/robseb/rsyocto) on your Intel SoC-FPGA Board by following the [getting started Guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
-* Setup Visual Studio Code Insider with [this instructions](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
+* Setup Visual Studio Code Insider with [this instruction guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
 * `Django 3.0.2` is already pre-installed on *rsYocto*
 
 ___
-# Testing the finshed version
+# Testing the finished version
 
-For installing and testing of the finish project do following steps:
- * Clone this repository by executing following Linux Terminal command on *rsYocto*
+For installing and testing the final project do the following steps:
+ * Clone this repository by executing the following Linux Terminal command on *rsYocto*
    ````bash
    git clone https://github.com/robseb/Django2FPGAdemo.git
    ````
@@ -73,7 +73,7 @@ For installing and testing of the finish project do following steps:
    ````bash
    cd DjangoFPGA
    ````
- * Import the Python pip-package "plotly" that is used for the plotting of the data:
+ * Import the Python pip-package "plotly" that is used for the plotting of data:
    ````bash
    pip install plotly
    ````
@@ -88,13 +88,13 @@ ___
 
 # Creating a new Django Project
 
-* Use in  *Visual Studio Code Insider*  integrated Linux Terminal to create with the following command a new Django project with the name "DjangoFPGA":
+* Use the Linux Terminal, which is reachable inside *Visual Studio Code Insider* to create a new Django project with the name "DjangoFPGA" by executing the following command:
   ````bash
   django-admin startproject DjangoFPGA
   ````
   ![Alt text](pic/pic01.jpg?raw=true "Django Development with Visual Studio Code")
  
- * **Note:** Use in the drop-down menu (blue arrow) the point "*sh*" to access the Linux Terminal. In case the point is not there press the “**+**”-icon to add it. 
+ * **Note:** Use in the drop-down menu (blue arrow) the point "*sh*" to access the Linux Terminal. In case the point is not there, press the “**+**”-icon to add it. 
  * Navigate with the Linux Terminal inside Visual Studio code to this project
   ````bash
   cd DjangoFPGA
@@ -103,14 +103,14 @@ ___
 # Testing the empty Django Project by accessing it with a web browser
 
 * By default the Django web server is only reachable internally by the embedded Linux
-* To access Django applications within your network do following steps:
+* To access Django applications within your network do the following steps:
   1. Open the Django project settings file (*settings.py*) with *Visual Studio Code* (as shown above) and allow everybody to connect with the following lines:
     ````python
     ALLOWED_HOSTS = [
      '*'
    ]
    ````
-  2. After any change of the settings file a **migration** of the project is necessary:
+  2. After some change of the settings file a **migration** of the project is necessary:
     ````bash
     python3 manage.py migrate 
     ````
@@ -177,7 +177,7 @@ As a second feature, we will build a management interface for changing the FPGA 
    python3 manage.py startapp BoardInteraction
    ````
   * **Note:** Be sure that this command is executed inside the project-folder (*DjangoFPGA/*)
-* The project folder now contains the following structure:
+* The project folder contains the following structure now:
   * All important files are marked
   
   ![Alt text](pic/pic03.jpg?raw=true "Django Folder structure")
@@ -210,7 +210,7 @@ As a second feature, we will build a management interface for changing the FPGA 
   from django.db import models
   from datetime import datetime
    #
-   # Class for reading a analog Sensor 
+   # Class for reading an analog Sensor 
    #
    class ADCSensorReading(models.Model):
        # Sensor value as Char Text Field type   
@@ -221,7 +221,7 @@ As a second feature, we will build a management interface for changing the FPGA 
            return self.reading
 
    # 
-   # Class for connecting a Analog Devices LTC LTC2308 ADC Channel
+   # Class for connecting an Analog Devices LTC LTC2308 ADC Channel
    #
    class ADCchannel(models.Model):
        name     = models.CharField(max_length=200)          # a name for the Sensor on the ADC Channel
@@ -300,8 +300,9 @@ As a second feature, we will build a management interface for changing the FPGA 
  (Hier ggf. manuel ein wert einfuegen)
  
   ### Presenting the Sensor Data and FPGA configuration on a web page
-  * To view this data in a graphic the Libary [plotly](https://plot.ly/python/) is used
-    * That is a easay way to implement such kind of UI-elemets to a web page, but really unefficient as well
+  * To view this data in a graphic the library [plotly](https://plot.ly/python/) is used
+    * That is an easy way to implement such kind of UI-elemets to a web page. 
+    * In the same way it is possible to add any kind of diagramms to this web App (please follow the official documentation)
   * To display something on a web page it is necessary to add some lines of code to the "*views.py*"-file (*DjangoFPGA/AccSensor/views.py*):
     ````python
     '''
@@ -365,7 +366,7 @@ As a second feature, we will build a management interface for changing the FPGA 
 
         ### Plot the ADC Values #####
 
-        # We want to show the last 100 messages, ordered most-recent-last
+        # Plot the latest 100 data points in time order 
         adcData = adcChvalue.order_by('-timestamp')[:100]
 
         y_data= []
@@ -397,8 +398,7 @@ As a second feature, we will build a management interface for changing the FPGA 
         })
 
     ````
-  * For displaying the FPGA Configuration management interface extend the *views.py*-file with following lies of python 
-    * This are two event functions, that are triggered in case a FPGA-Configuration button was pressed
+  * For displaying the FPGA Configuration management interface extend the *views.py*-file with the following lines of python code 
     ```python
     #
     # Called in case the user selected a FPGA Configuration 
@@ -429,6 +429,7 @@ As a second feature, we will build a management interface for changing the FPGA 
         # Relaod the main app page again 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     ```
+    * These are two event functions, which are triggered in the case a FPGA-Configuration button was pressed
   * To allow to collect and update the ADC Sensor data add following function to the *"views.py"*-file
     ````python
     #
