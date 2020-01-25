@@ -93,7 +93,7 @@ For installing and testing the final project do the following steps:
    ````bash
    python3 manage.py runserver 0:8181
    ````
-
+* Follow: Testing the Web Appilcation]((https://github.com/robseb/Django2FPGAdemo#testing-the-web-application)
 ___
 <h3><u> Or build it by your own with this step by step guide: </u> </h3>
 <br>
