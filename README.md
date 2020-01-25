@@ -77,11 +77,17 @@ For installing and testing the final project do the following steps:
    ````
  * Navigate inside the project folder
    ````bash
-   cd DjangoFPGA
+   cd DjangoFPGA/DjangoFPGA
    ````
  * Import the Python pip-package "plotly" that is used for the plotting of data:
    ````bash
    pip install plotly
+   ````
+ * To generate a SQLite database with all settings execude the following Linux Shell commands (*DjangoFPGA/*):
+   ````bash
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   python3 manage.py migrate --run-syncdb
    ````
  * Use the next command to start the web server (here on Port 8181)
    ````bash
