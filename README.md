@@ -89,11 +89,15 @@ For installing and testing the final project do the following steps:
    python3 manage.py migrate
    python3 manage.py migrate --run-syncdb
    ````
+ * Generate an administration interface with your login information
+   ````bash
+   python3 manage.py createsuperuser
+   ````
  * Use the next command to start the web server (here on Port 8181)
    ````bash
    python3 manage.py runserver 0:8181
    ````
-* Follow: Testing the Web Appilcation]((https://github.com/robseb/Django2FPGAdemo#testing-the-web-application)
+* Follow: Testing the Web Appilcation](https://github.com/robseb/Django2FPGAdemo#testing-the-web-application)
 ___
 <h3><u> Or build it by your own with this step by step guide: </u> </h3>
 <br>
