@@ -67,7 +67,7 @@ ___
 * Setup Visual Studio Code Insider with [this instruction guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
 * On *rsYocto* (Version. 1.031+) are following compunets for this project pre-installed:
   * `Django 3.0.2`
-  *  [*rstools*]() for accessing the FPGA fabric
+  *  [*rstools*](https://github.com/robseb/meta-rstools) for accessing the FPGA fabric
   *  During the boot are following modules connected to the Lightweight HPS to FPGA Bridge
      * PIO-Controller for controlling the on-Board LEDs on the Address offset [0x20](https://raw.githubusercontent.com/robseb/rsyocto/rsYocto-1.03/doc/symbols/DE10Nano_pinout.png)
      * *Analog Devices LTC2308* Interface IP on the Address offset [0x40](https://raw.githubusercontent.com/robseb/rsyocto/rsYocto-1.03/doc/symbols/DE10Nano_pinout.png)
