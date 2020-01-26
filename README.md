@@ -37,7 +37,7 @@ ___
 The following sequence Diagram shows all involved actors and the data flow by reading an ADC Value to a *SQLite* Database. If an user opens the web page, Django plots the complete data into the web interface as shown below. 
 ![Alt text](pic/SequenceDiagram.jpg?raw=true "Sequence Diagramm of the Sensor Reading")
 
-A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtriger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then Django adds the value with a time stamp to the *SQLite* database. 
+A HTTP GET-command (here by calling the URL *http://127.0.1:8181/ADCtrigger*) triggers the Django web application. It calls the “*read Sensor*” application. This is a python script, which reads the Soft-IP ADC Interface and returns the ADC convention. Then Django adds the value with a time stamp to the *SQLite* database. 
 
 To repeat and time sync the readout of the ADC a Shell script or the tool `crontab` can be considered.
 
@@ -65,7 +65,13 @@ ___
 
 * Boot up [*rsYocto*](https://github.com/robseb/rsyocto) on your Intel SoC-FPGA Board by following the [getting started Guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/1_Booting.md)
 * Setup Visual Studio Code Insider with [this instruction guide](https://github.com/robseb/rsyocto/blob/rsYocto-1.03/doc/guides/4_Python.md)
-* `Django 3.0.2` is already pre-installed on *rsYocto*
+* On *rsYocto* (Version. 1.031+) are following compunets for this project pre-installed:
+  * `Django 3.0.2`
+  *  [*rstools*]() for accessing the FPGA fabric
+  *  During the boot are following modules connected to the Lightweight HPS to FPGA Bridge
+     * PIO-Controller for controlling the on-Board LEDs on the Address offset [0x20](https://raw.githubusercontent.com/robseb/rsyocto/rsYocto-1.03/doc/symbols/DE10Nano_pinout.png)
+     * *Analog Devices LTC2308* Interface IP on the Address offset [0x40](https://raw.githubusercontent.com/robseb/rsyocto/rsYocto-1.03/doc/symbols/DE10Nano_pinout.png)
+
 
 
 # Installing the finshed Web interface
